@@ -77,17 +77,28 @@ export default function Carousel() {
             borderRadius: 16, padding: 'clamp(20px, 5vw, 32px) clamp(16px, 5vw, 40px)',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             textDecoration: 'none', cursor: href ? 'pointer' : 'default',
+            position: 'relative', overflow: 'hidden',
           }}>
-            <div>
+            {/* glass overlay */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'rgba(255,255,255,0.08)',
+              backdropFilter: 'blur(2px)',
+              borderRadius: 16,
+              border: '1px solid rgba(255,255,255,0.2)',
+              pointerEvents: 'none',
+            }} />
+            <div style={{ position: 'relative', zIndex: 1 }}>
               <span style={{
-                fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.85)',
-                background: 'rgba(255,255,255,0.2)', borderRadius: 20,
-                padding: '3px 12px', marginBottom: 12, display: 'inline-block',
+                fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.9)',
+                background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(8px)',
+                borderRadius: 20, padding: '3px 12px', marginBottom: 12, display: 'inline-block',
+                border: '1px solid rgba(255,255,255,0.25)',
               }}>{card.tag}</span>
               <h2 style={{ fontSize: 'clamp(16px, 4vw, 22px)', fontWeight: 800, color: '#fff', marginBottom: 8, letterSpacing: -0.5 }}>{card.title}</h2>
               <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: 'rgba(255,255,255,0.82)', maxWidth: 480, lineHeight: 1.6 }}>{card.description}</p>
             </div>
-            <div style={{ fontSize: 72, flexShrink: 0, marginLeft: 32, opacity: 0.9 }}>{card.emoji}</div>
+            <div style={{ fontSize: 72, flexShrink: 0, marginLeft: 32, opacity: 0.75, position: 'relative', zIndex: 1 }}>{card.emoji}</div>
           </Wrapper>
           );
         })}
