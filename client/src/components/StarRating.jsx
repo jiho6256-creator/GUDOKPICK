@@ -16,8 +16,6 @@ function getValueFromStars(clientX, starEls) {
 export default function StarRating({ value, onChange, size = 24 }) {
   const starRefs = useRef([]);
   const dragging = useRef(false);
-  const [inputVal, setInputVal] = useState('');
-  const [editing, setEditing] = useState(false);
 
   const getValue = (clientX) => {
     const v = getValueFromStars(clientX, starRefs.current);
@@ -43,11 +41,9 @@ export default function StarRating({ value, onChange, size = 24 }) {
     };
   }, [onChange]);
 
-  const handleInputBlur = () => {
-    setEditing(false);
-    const n = parseFloat(inputVal);
+  const handleInput = (e) => {
+    const n = parseFloat(e.target.value);
     if (!isNaN(n)) onChange?.(Math.min(5, Math.max(0.1, Math.round(n * 10) / 10)));
-    setInputVal('');
   };
 
   const fillWidth = (n) => {
@@ -76,22 +72,13 @@ export default function StarRating({ value, onChange, size = 24 }) {
           </span>
         ))}
       </div>
-      {editing ? (
-        <input
-          autoFocus
-          value={inputVal}
-          onChange={e => setInputVal(e.target.value)}
-          onBlur={handleInputBlur}
-          onKeyDown={e => e.key === 'Enter' && handleInputBlur()}
-          style={{ width: 44, border: '1.5px solid var(--primary)', borderRadius: 6, padding: '2px 6px', fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', fontFamily: 'inherit' }}
-          placeholder={value?.toString()}
-        />
-      ) : (
-        <span onClick={() => { setEditing(true); setInputVal(value?.toString() || ''); }}
-          style={{ fontSize: 13, fontWeight: 700, color: '#FFB800', minWidth: 28, cursor: 'text', borderBottom: '1px dashed #FFB800' }}>
-          {value > 0 ? value.toFixed(1) : '—'}
-        </span>
-      )}
+      <input
+        type="number" min="0.1" max="5" step="0.1"
+        value={value > 0 ? value : ''}
+        onChange={handleInput}
+        style={{ width: 48, border: '1.5px solid #FFB800', borderRadius: 6, padding: '2px 6px', fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', fontFamily: 'inherit', color: '#FFB800' }}
+        placeholder="0.0"
+      />
     </div>
   );
 }
