@@ -218,6 +218,16 @@ export default function ServiceDetail() {
                           style={{ display: 'flex', alignItems: 'center', gap: 3, color: 'var(--text-secondary)', fontSize: 12, padding: '2px 6px', borderRadius: 6, border: '1px solid var(--border)', background: '#fff' }}>
                           <Pencil size={11} /> 수정
                         </button>
+                        <button onClick={async () => {
+                          const nick = prompt('닉네임을 입력하면 삭제됩니다:');
+                          if (!nick) return;
+                          try {
+                            await axios.delete(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/reviews/${r.id}`, { data: { nickname: nick } });
+                            load();
+                          } catch { alert('닉네임이 일치하지 않습니다.'); }
+                        }} style={{ display: 'flex', alignItems: 'center', gap: 3, color: '#DC2626', fontSize: 12, padding: '2px 6px', borderRadius: 6, border: '1px solid #FCA5A5', background: '#FEF2F2' }}>
+                          <X size={11} /> 삭제
+                        </button>
                       </div>
                     </div>
                     {r.comment && <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{r.comment}</p>}
