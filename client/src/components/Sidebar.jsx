@@ -122,9 +122,11 @@ export default function Sidebar() {
           }}>
             {naverUser ? (
               <>
-                <span style={{ width: 22, height: 22, borderRadius: '50%', background: naverUser.type === 'guest' ? '#6B7280' : naverUser.type === 'google' ? '#6B7280' : '#03C75A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 800 }}>
-                  {naverUser.type === 'guest' ? 'G' : naverUser.type === 'google' ? 'G' : 'N'}
-                </span>
+                {naverUser.type !== 'guest' && (
+                  <span style={{ width: 22, height: 22, borderRadius: '50%', background: naverUser.type === 'google' ? '#6B7280' : '#03C75A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 800 }}>
+                    {naverUser.type === 'google' ? 'G' : 'N'}
+                  </span>
+                )}
                 {naverUser.nickname}
               </>
             ) : '로그인'}
