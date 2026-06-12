@@ -171,7 +171,7 @@ export default function ServiceDetail() {
                   </div>
                 </div>
                 <textarea value={reviewForm.comment} onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })}
-                  placeholder="리뷰를 작성해주세요 (선택)" maxLength={300} rows={3}
+                  placeholder="리뷰를 작성해주세요 (선택)" maxLength={500} rows={3}
                   style={{ width: '100%', border: '1.5px solid var(--border)', borderRadius: 10, padding: '10px 14px', fontSize: 14, resize: 'none', background: '#fff', color: 'var(--text)', outline: 'none', fontFamily: 'inherit', marginBottom: 10 }}
                 />
                 <button onClick={submitReview} disabled={!reviewForm.nickname || !reviewForm.rating || submitting}
@@ -234,7 +234,7 @@ export default function ServiceDetail() {
                   </div>
                   {editingReview === r.id
                     ? <textarea value={editForm.comment} onChange={e => setEditForm({ ...editForm, comment: e.target.value })}
-                        maxLength={300} rows={2} autoFocus
+                        maxLength={500} rows={2} autoFocus
                         style={{ width: '100%', border: '1.5px solid var(--primary)', borderRadius: 8, padding: '8px 10px', fontSize: 14, resize: 'none', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box', color: 'var(--text)' }} />
                     : r.comment && <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{r.comment}</p>}
                 </>

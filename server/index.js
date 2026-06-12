@@ -79,7 +79,7 @@ app.post('/api/services/:id/reviews', (req, res) => {
 
   const result = db.prepare(
     'INSERT INTO reviews (service_id, nickname, naver_id, rating, comment) VALUES (?, ?, ?, ?, ?)'
-  ).run(req.params.id, nickname.slice(0, 20), naver_id || null, Number(rating), (comment || '').slice(0, 300));
+  ).run(req.params.id, nickname.slice(0, 20), naver_id || null, Number(rating), (comment || '').slice(0, 500));
 
   res.json({ id: result.lastInsertRowid });
 });
