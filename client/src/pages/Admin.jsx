@@ -215,21 +215,21 @@ export default function Admin() {
                   {editingId === s.id ? (
                     <ServiceForm form={form} setForm={setForm} onSave={saveEdit} onCancel={() => setEditingId(null)} onDelete={() => { setEditingId(null); deleteService(s.id, s.name); }} />
                   ) : (
-                    <div onClick={() => startEdit(s)} style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 100px auto', gap: 12, padding: '14px 18px', borderBottom: '1px solid var(--border)', alignItems: 'center', cursor: 'pointer' }}
+                    <div style={{ display: 'flex', alignItems: 'center', padding: '14px 18px', borderBottom: '1px solid var(--border)', gap: 12 }}
                       onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-bg)'}
                       onMouseLeave={e => e.currentTarget.style.background = ''}
                     >
-                      <div>
+                      <div style={{ flex: 1, cursor: 'pointer' }} onClick={() => startEdit(s)}>
                         <span style={{ fontWeight: 700, fontSize: 14 }}>{s.name}</span>
                         <span style={{ fontSize: 12, color: 'var(--text-tertiary)', marginLeft: 8 }}>{s.logo}</span>
                       </div>
-                      <span style={{ fontSize: 13, color: 'var(--primary)', fontWeight: 600 }}>{Number(s.monthly_price).toLocaleString()}원/월</span>
-                      <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>무료체험 {s.trial_days}일</span>
-                      <div style={{ display: 'flex', gap: 6 }} onClick={e => e.stopPropagation()}>
-                        <button onClick={() => startEdit(s)} style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 8, background: 'var(--primary-bg)', color: 'var(--primary)', fontSize: 13, fontWeight: 600 }}>
+                      <span style={{ fontSize: 13, color: 'var(--primary)', fontWeight: 600, minWidth: 90 }}>{Number(s.monthly_price).toLocaleString()}원/월</span>
+                      <span style={{ fontSize: 12, color: 'var(--text-tertiary)', minWidth: 80 }}>무료체험 {s.trial_days}일</span>
+                      <div style={{ display: 'flex', gap: 8 }} onClick={e => e.stopPropagation()}>
+                        <button onClick={() => startEdit(s)} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 8, background: 'var(--primary-bg)', color: 'var(--primary)', fontSize: 13, fontWeight: 700, border: '1px solid var(--primary)', whiteSpace: 'nowrap' }}>
                           <Edit2 size={13} /> 수정
                         </button>
-                        <button onClick={() => deleteService(s.id, s.name)} style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px', borderRadius: 8, background: '#FEE2E2', color: '#DC2626', fontSize: 13, fontWeight: 600 }}>
+                        <button onClick={() => deleteService(s.id, s.name)} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 8, background: '#FEE2E2', color: '#DC2626', fontSize: 13, fontWeight: 700, border: '1px solid #FCA5A5', whiteSpace: 'nowrap' }}>
                           <Trash2 size={13} /> 삭제
                         </button>
                       </div>
