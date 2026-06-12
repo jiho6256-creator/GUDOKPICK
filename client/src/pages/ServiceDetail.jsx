@@ -140,7 +140,6 @@ export default function ServiceDetail() {
             <Star size={16} fill="#FFB800" color="#FFB800" style={{ verticalAlign: 'middle', marginRight: 4 }} />
             {rankScore}
           </div>
-          <p style={{ fontSize: 11, color: 'var(--text-secondary)' }}>리뷰 {service.review_count}개 기반</p>
         </div>
       </div>
 
