@@ -154,13 +154,13 @@ export default function ServiceDetail() {
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
           <h3 style={{ fontSize: 16, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ fontSize: 18 }}>💬</span> 커뮤니티 관련 글 {taggedPosts.length > 0 && <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>({taggedPosts.length})</span>}
+            <span style={{ fontSize: 18 }}>🎁</span> 진행 중인 프로모션 {taggedPosts.length > 0 && <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>({taggedPosts.length})</span>}
           </h3>
-          <button onClick={() => navigate('/community')} style={{ fontSize: 13, color: 'var(--primary)', fontWeight: 600 }}>커뮤니티 가기 →</button>
+          <button onClick={() => navigate('/community')} style={{ fontSize: 13, color: 'var(--primary)', fontWeight: 600 }}>더보기 →</button>
         </div>
         {taggedPosts.length === 0 ? (
           <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '28px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
-            아직 관련 커뮤니티 글이 없어요. 첫 번째로 공유해보세요!
+            진행 중인 프로모션이 없어요. 커뮤니티에서 첫 번째로 공유해보세요!
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

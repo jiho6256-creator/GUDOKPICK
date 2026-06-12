@@ -190,14 +190,14 @@ app.get('/api/posts/:id', (req, res) => {
   res.json({ ...post, comments });
 });
 
-// GET posts tagged with a service name
+// GET deal posts tagged with a service name
 app.get('/api/posts/by-service/:name', (req, res) => {
   const posts = db.prepare(`
     SELECT p.*, COUNT(DISTINCT c.id) as comment_count, COUNT(DISTINCT l.id) as like_count
     FROM posts p
     LEFT JOIN post_comments c ON p.id = c.post_id
     LEFT JOIN post_likes l ON p.id = l.post_id
-    WHERE p.service_tag = ?
+    WHERE p.service_tag = ? AND p.category = 'deal'
     GROUP BY p.id ORDER BY p.created_at DESC
   `).all(req.params.name);
   res.json(posts);
