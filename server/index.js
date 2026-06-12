@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const db = require('./db');
+const axios = require('axios');
 
 const app = express();
 app.use(cors());
@@ -274,6 +275,42 @@ app.delete('/api/admin/services/:id', adminAuth, (req, res) => {
   db.prepare('DELETE FROM promotions WHERE service_id = ?').run(req.params.id);
   db.prepare('DELETE FROM services WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
+});
+
+// ── Naver OAuth ──────────────────────────────────────────────
+const NAVER_CLIENT_ID = process.env.NAVER_CLIENT_ID || 'uN9fdPdJAEJaccJbKpvD';
+const NAVER_CLIENT_SECRET = process.env.NAVER_CLIENT_SECRET || 'alO3KS19DV';
+const CLIENT_URL = process.env.CLIENT_URL || 'https://gudokpick.vercel.app';
+
+app.get('/auth/naver', (req, res) => {
+  const state = Math.random().toString(36).substring(2);
+  const callbackUrl = `https://gudokpick.onrender.com/auth/naver/callback`;
+  const url = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${NAVER_CLIENT_ID}&redirect_uri=${encodeURIComponent(callbackUrl)}&state=${state}`;
+  res.redirect(url);
+});
+
+app.get('/auth/naver/callback', async (req, res) => {
+  const { code, state } = req.query;
+  try {
+    const tokenRes = await axios.get('https://nid.naver.com/oauth2.0/token', {
+      params: {
+        grant_type: 'authorization_code',
+        client_id: NAVER_CLIENT_ID,
+        client_secret: NAVER_CLIENT_SECRET,
+        code,
+        state,
+      },
+    });
+    const accessToken = tokenRes.data.access_token;
+    const profileRes = await axios.get('https://openapi.naver.com/v1/nid/me', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const { nickname, id } = profileRes.data.response;
+    const displayName = nickname || `naver_${id.slice(0, 8)}`;
+    res.redirect(`${CLIENT_URL}?naver_nickname=${encodeURIComponent(displayName)}&naver_id=${encodeURIComponent(id)}`);
+  } catch (e) {
+    res.redirect(`${CLIENT_URL}?naver_error=1`);
+  }
 });
 
 const PORT = process.env.PORT || 4000;
