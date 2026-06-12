@@ -1,6 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-import Home from './pages/Home';
 import ServiceDetail from './pages/ServiceDetail';
 import Ranking from './pages/Ranking';
 import Calculator from './pages/Calculator';
@@ -14,7 +13,7 @@ export default function App() {
       <Sidebar />
       <main style={{ marginTop: 60, minHeight: '100vh', width: '100%', overflowX: 'hidden' }}>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="/ranking" replace />} />
           <Route path="/service/:id" element={<ServiceDetail />} />
           <Route path="/ranking" element={<Ranking />} />
           <Route path="/king" element={<King />} />
