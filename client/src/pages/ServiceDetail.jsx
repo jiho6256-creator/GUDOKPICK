@@ -23,14 +23,25 @@ export default function ServiceDetail() {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [editingReview, setEditingReview] = useState(null);
   const [editForm, setEditForm] = useState({ nickname: '', rating: 0, comment: '' });
-  const naverUser = (() => {
+  const getNaverUser = () => {
     const n = localStorage.getItem('naver_nickname');
     const i = localStorage.getItem('naver_id');
     return n && i ? { nickname: n, id: i } : null;
-  })();
+  };
+  const [naverUser, setNaverUser] = useState(getNaverUser);
 
   useEffect(() => {
     if (naverUser) setReviewForm(f => ({ ...f, nickname: naverUser.nickname }));
+  }, []);
+
+  useEffect(() => {
+    const handler = () => {
+      const u = getNaverUser();
+      setNaverUser(u);
+      setReviewForm(f => ({ ...f, nickname: u?.nickname || '' }));
+    };
+    window.addEventListener('auth-change', handler);
+    return () => window.removeEventListener('auth-change', handler);
   }, []);
 
   const load = () => {

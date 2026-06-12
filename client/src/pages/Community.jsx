@@ -53,10 +53,20 @@ export default function Community() {
   const [form, setForm] = useState({ nickname: '', title: '', content: '', category: 'general', service_name: '' });
   const [submitting, setSubmitting] = useState(false);
   const [services, setServices] = useState([]);
-  const naverUser = getNaverUser();
+  const [naverUser, setNaverUser] = useState(getNaverUser);
 
   useEffect(() => {
     if (naverUser) setForm(f => ({ ...f, nickname: naverUser.nickname }));
+  }, []);
+
+  useEffect(() => {
+    const handler = () => {
+      const u = getNaverUser();
+      setNaverUser(u);
+      setForm(f => ({ ...f, nickname: u?.nickname || '' }));
+    };
+    window.addEventListener('auth-change', handler);
+    return () => window.removeEventListener('auth-change', handler);
   }, []);
 
   useEffect(() => {
@@ -213,10 +223,20 @@ export function PostDetail() {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [liking, setLiking] = useState(false);
-  const naverUser = getNaverUser();
+  const [naverUser, setNaverUser] = useState(getNaverUser);
 
   useEffect(() => {
     if (naverUser) setCommentForm(f => ({ ...f, nickname: naverUser.nickname }));
+  }, []);
+
+  useEffect(() => {
+    const handler = () => {
+      const u = getNaverUser();
+      setNaverUser(u);
+      setCommentForm(f => ({ ...f, nickname: u?.nickname || '' }));
+    };
+    window.addEventListener('auth-change', handler);
+    return () => window.removeEventListener('auth-change', handler);
   }, []);
 
   const load = () => {

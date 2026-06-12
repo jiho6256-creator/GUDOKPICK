@@ -56,7 +56,7 @@ export default function Sidebar() {
     localStorage.removeItem('login_type');
     setNaverUser(null);
     setShowLoginModal(false);
-    window.location.reload();
+    window.dispatchEvent(new Event('auth-change'));
   };
 
   const guestLogin = () => {
@@ -69,7 +69,7 @@ export default function Sidebar() {
     setNaverUser({ nickname: nick, id: guestId, type: 'guest' });
     setGuestInput('');
     setShowLoginModal(false);
-    window.location.reload();
+    window.dispatchEvent(new Event('auth-change'));
   };
 
   return (
