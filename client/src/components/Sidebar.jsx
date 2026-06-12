@@ -123,7 +123,7 @@ export default function Sidebar() {
             {naverUser ? (
               <>
                 {naverUser.type !== 'guest' && (
-                  <span style={{ width: 22, height: 22, borderRadius: '50%', background: naverUser.type === 'google' ? '#4B5563' : '#03C75A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 800 }}>
+                  <span style={{ width: 22, height: 22, borderRadius: '50%', background: naverUser.type === 'google' ? '#4B5563' : '#03C75A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 800, lineHeight: 1, letterSpacing: 0 }}>
                     {naverUser.type === 'google' ? 'G' : 'N'}
                   </span>
                 )}
