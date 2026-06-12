@@ -13,7 +13,7 @@ const CATEGORIES = [
   { key: 'shopping', label: '쇼핑' },
   { key: 'food', label: '배달' },
   { key: 'music', label: '음악' },
-  { key: 'game', label: '게임' },
+  { key: 'game', label: '기타' },
 ];
 
 export default function Ranking() {

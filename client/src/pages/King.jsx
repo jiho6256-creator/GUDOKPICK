@@ -6,7 +6,7 @@ import ServiceLogo from '../components/ServiceLogo';
 
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000' });
 
-const CATEGORY_LABELS = { ott: 'OTT', shopping: '쇼핑', music: '음악', ai: 'AI', food: '배달', game: '게임' };
+const CATEGORY_LABELS = { ott: 'OTT', shopping: '쇼핑', music: '음악', ai: 'AI', food: '배달', game: '기타' };
 
 export default function King() {
   const [services, setServices] = useState([]);

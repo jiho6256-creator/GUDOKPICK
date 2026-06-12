@@ -22,7 +22,7 @@ const SORTS = [
   { key: 'rating', label: '평점순' },
 ];
 
-const CAT_LABELS = { ott: 'OTT', shopping: '쇼핑', music: '음악', ai: 'AI', food: '배달', game: '게임' };
+const CAT_LABELS = { ott: 'OTT', shopping: '쇼핑', music: '음악', ai: 'AI', food: '배달', game: '기타' };
 
 export default function Home() {
   const [searchParams, setSearchParams] = useSearchParams();

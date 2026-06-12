@@ -13,7 +13,7 @@ const CATEGORIES = [
   { key: 'music', label: '음악' },
   { key: 'ai', label: 'AI' },
   { key: 'food', label: '배달' },
-  { key: 'game', label: '게임' },
+  { key: 'game', label: '기타' },
 ];
 
 export default function Sidebar() {

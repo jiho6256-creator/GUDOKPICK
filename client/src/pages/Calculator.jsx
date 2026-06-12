@@ -3,7 +3,7 @@ import { Calculator as CalcIcon, Plus, Trash2, TrendingDown, PieChart } from 'lu
 import { getServices } from '../api';
 import ServiceLogo from '../components/ServiceLogo';
 
-const CAT_LABELS = { ott: 'OTT', shopping: '쇼핑', music: '음악', ai: 'AI', food: '배달', game: '게임' };
+const CAT_LABELS = { ott: 'OTT', shopping: '쇼핑', music: '음악', ai: 'AI', food: '배달', game: '기타' };
 const CAT_COLORS = { ott: '#E50914', shopping: '#C00011', music: '#1DB954', ai: '#5B4BDB', food: '#FFE040', game: '#107C10' };
 
 const CATEGORIES = [
@@ -13,7 +13,7 @@ const CATEGORIES = [
   { key: 'music', label: '음악' },
   { key: 'ai', label: 'AI' },
   { key: 'food', label: '배달' },
-  { key: 'game', label: '게임' },
+  { key: 'game', label: '기타' },
 ];
 
 export default function Calculator() {
