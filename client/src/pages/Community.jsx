@@ -86,7 +86,7 @@ export default function Community() {
     if (!form.nickname || !form.title || !form.content) return;
     setSubmitting(true);
     try {
-      const res = await api.post('/api/posts', { ...form, naver_id: naverUser?.id || null });
+      const res = await api.post('/api/posts', { ...form, service_tag: form.service_name || null, naver_id: naverUser?.id || null });
       setShowForm(false);
       setForm({ nickname: '', title: '', content: '', category: 'general' });
       navigate(`/community/${res.data.id}`);

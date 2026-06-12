@@ -23,6 +23,7 @@ export default function ServiceDetail() {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [editingReview, setEditingReview] = useState(null);
   const [editForm, setEditForm] = useState({ nickname: '', rating: 0, comment: '' });
+  const [taggedPosts, setTaggedPosts] = useState([]);
   const getNaverUser = () => {
     const n = localStorage.getItem('naver_nickname');
     const i = localStorage.getItem('naver_id');
@@ -46,7 +47,13 @@ export default function ServiceDetail() {
 
   const load = () => {
     setLoading(true);
-    getService(id).then(setService).finally(() => setLoading(false));
+    getService(id).then(data => {
+      setService(data);
+      if (data?.name) {
+        axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/posts/by-service/${encodeURIComponent(data.name)}`)
+          .then(r => setTaggedPosts(r.data)).catch(() => {});
+      }
+    }).finally(() => setLoading(false));
   };
 
   useEffect(() => { load(); }, [id]);
@@ -141,6 +148,40 @@ export default function ServiceDetail() {
             {rankScore}
           </div>
         </div>
+      </div>
+
+      {/* Community tagged posts */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ fontSize: 18 }}>💬</span> 커뮤니티 관련 글 {taggedPosts.length > 0 && <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-secondary)' }}>({taggedPosts.length})</span>}
+          </h3>
+          <button onClick={() => navigate('/community')} style={{ fontSize: 13, color: 'var(--primary)', fontWeight: 600 }}>커뮤니티 가기 →</button>
+        </div>
+        {taggedPosts.length === 0 ? (
+          <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '28px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: 14 }}>
+            아직 관련 커뮤니티 글이 없어요. 첫 번째로 공유해보세요!
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {taggedPosts.slice(0, 5).map(post => (
+              <div key={post.id} onClick={() => navigate(`/community/${post.id}`)} style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '14px 18px', cursor: 'pointer', transition: 'box-shadow 0.15s' }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = 'var(--shadow)'}
+                onMouseLeave={e => e.currentTarget.style.boxShadow = 'none'}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)', marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{post.title}</p>
+                    <p style={{ fontSize: 12, color: 'var(--text-secondary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{post.content}</p>
+                  </div>
+                  <div style={{ display: 'flex', gap: 10, fontSize: 12, color: 'var(--text-tertiary)', flexShrink: 0 }}>
+                    <span>💬 {post.comment_count}</span>
+                    <span>{post.created_at?.slice(0, 10)}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div>

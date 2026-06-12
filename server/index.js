@@ -190,13 +190,26 @@ app.get('/api/posts/:id', (req, res) => {
   res.json({ ...post, comments });
 });
 
+// GET posts tagged with a service name
+app.get('/api/posts/by-service/:name', (req, res) => {
+  const posts = db.prepare(`
+    SELECT p.*, COUNT(DISTINCT c.id) as comment_count, COUNT(DISTINCT l.id) as like_count
+    FROM posts p
+    LEFT JOIN post_comments c ON p.id = c.post_id
+    LEFT JOIN post_likes l ON p.id = l.post_id
+    WHERE p.service_tag = ?
+    GROUP BY p.id ORDER BY p.created_at DESC
+  `).all(req.params.name);
+  res.json(posts);
+});
+
 // POST create post
 app.post('/api/posts', (req, res) => {
-  const { nickname, title, content, category, naver_id } = req.body;
+  const { nickname, title, content, category, service_tag, naver_id } = req.body;
   if (!nickname || !title || !content) return res.status(400).json({ error: 'nickname, title, content required' });
   const result = db.prepare(
-    'INSERT INTO posts (nickname, naver_id, title, content, category) VALUES (?, ?, ?, ?, ?)'
-  ).run(nickname.slice(0, 20), naver_id || null, title.slice(0, 100), content.slice(0, 2000), category || 'general');
+    'INSERT INTO posts (nickname, naver_id, title, content, category, service_tag) VALUES (?, ?, ?, ?, ?, ?)'
+  ).run(nickname.slice(0, 20), naver_id || null, title.slice(0, 100), content.slice(0, 2000), category || 'general', service_tag || null);
   res.json({ id: result.lastInsertRowid });
 });
 

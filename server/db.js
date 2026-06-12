@@ -51,6 +51,7 @@ db.exec(`
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     category TEXT DEFAULT 'general',
+    service_tag TEXT,
     view_count INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
@@ -84,6 +85,9 @@ db.exec(`
     sort_order INTEGER DEFAULT 0
   );
 `);
+
+// Migrate: add service_tag column if not exists
+try { db.exec('ALTER TABLE posts ADD COLUMN service_tag TEXT'); } catch {}
 
 // Seed carousel cards
 const carouselCount = db.prepare('SELECT COUNT(*) as c FROM carousel_cards').get();
