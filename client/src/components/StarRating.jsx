@@ -69,6 +69,7 @@ export default function StarRating({ value, onChange, size = 24 }) {
         value={inputVal}
         onChange={e => {
           const raw = e.target.value;
+          if (/\.\d{2,}/.test(raw)) return;
           const n = parseFloat(raw);
           if (!isNaN(n) && n > 5) { setInputVal('5'); onChange?.(5); return; }
           setInputVal(raw);
