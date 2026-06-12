@@ -26,7 +26,7 @@ export default function StarRating({ value, onChange, size = 24 }) {
     const onMove = (e) => {
       if (!dragging.current || isFocused.current) return;
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const v = Math.min(5, Math.max(0.1, getValueFromStars(clientX, starRefs.current)));
+      const v = Math.min(5, Math.max(0.5, getValueFromStars(clientX, starRefs.current)));
       onChange?.(v);
     };
     const onUp = () => { dragging.current = false; };
@@ -51,8 +51,8 @@ export default function StarRating({ value, onChange, size = 24 }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <div style={{ display: 'flex', gap: 4, cursor: 'pointer', userSelect: 'none' }}
-        onMouseDown={e => { dragging.current = true; if (!isFocused.current) { const v = Math.min(5, Math.max(0.1, getValueFromStars(e.clientX, starRefs.current))); onChange?.(v); } }}
-        onTouchStart={e => { dragging.current = true; if (!isFocused.current) { const v = Math.min(5, Math.max(0.1, getValueFromStars(e.touches[0].clientX, starRefs.current))); onChange?.(v); } }}
+        onMouseDown={e => { dragging.current = true; if (!isFocused.current) { const v = Math.min(5, Math.max(0.5, getValueFromStars(e.clientX, starRefs.current))); onChange?.(v); } }}
+        onTouchStart={e => { dragging.current = true; if (!isFocused.current) { const v = Math.min(5, Math.max(0.5, getValueFromStars(e.touches[0].clientX, starRefs.current))); onChange?.(v); } }}
       >
         {[1, 2, 3, 4, 5].map((n, i) => (
           <span key={n} ref={el => starRefs.current[i] = el}
