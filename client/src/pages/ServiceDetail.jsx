@@ -135,13 +135,15 @@ export default function ServiceDetail() {
               </h3>
               {alreadyReviewed ? (
                 <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>이미 리뷰를 작성하셨습니다</span>
-              ) : (
+              ) : naverUser ? (
                 <button onClick={() => setShowReviewForm(!showReviewForm)} style={{
                   fontSize: 13, fontWeight: 600, color: 'var(--primary)',
                   background: 'var(--primary-bg)', padding: '7px 14px', borderRadius: 20, border: '1px solid var(--primary)',
                 }}>
                   {showReviewForm ? '취소' : '+ 리뷰 작성'}
                 </button>
+              ) : (
+                <span style={{ fontSize: 13, color: 'var(--text-tertiary)' }}>로그인 후 리뷰를 작성할 수 있습니다</span>
               )}
             </div>
 
