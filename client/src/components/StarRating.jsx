@@ -6,8 +6,7 @@ function getValueFromStars(clientX, starEls) {
     const rect = starEls[i].getBoundingClientRect();
     if (clientX >= rect.left) {
       const frac = (clientX - rect.left) / rect.width;
-      const raw = i + frac;
-      return Math.round(raw * 10) / 10;
+      return Math.round((i + frac) * 10) / 10;
     }
   }
   return 0.1;
@@ -16,17 +15,19 @@ function getValueFromStars(clientX, starEls) {
 export default function StarRating({ value, onChange, size = 24 }) {
   const starRefs = useRef([]);
   const dragging = useRef(false);
+  const isFocused = useRef(false);
+  const [inputVal, setInputVal] = useState(value > 0 ? String(value) : '');
 
-  const getValue = (clientX) => {
-    const v = getValueFromStars(clientX, starRefs.current);
-    return Math.min(5, Math.max(0.1, v));
-  };
+  useEffect(() => {
+    if (!isFocused.current) setInputVal(value > 0 ? String(value) : '');
+  }, [value]);
 
   useEffect(() => {
     const onMove = (e) => {
-      if (!dragging.current) return;
+      if (!dragging.current || isFocused.current) return;
       const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      onChange?.(getValue(clientX));
+      const v = Math.min(5, Math.max(0.1, getValueFromStars(clientX, starRefs.current)));
+      onChange?.(v);
     };
     const onUp = () => { dragging.current = false; };
     document.addEventListener('mousemove', onMove);
@@ -41,16 +42,6 @@ export default function StarRating({ value, onChange, size = 24 }) {
     };
   }, [onChange]);
 
-  const [inputVal, setInputVal] = useState('');
-  const [focused, setFocused] = useState(false);
-
-  const handleInput = (e) => {
-    const raw = e.target.value;
-    setInputVal(raw);
-    const n = parseFloat(raw);
-    if (!isNaN(n) && n > 0) onChange?.(Math.min(5, Math.max(0.1, Math.round(n * 10) / 10)));
-  };
-
   const fillWidth = (n) => {
     if (value >= n) return '100%';
     if (value > n - 1) return `${(value - (n - 1)) * 100}%`;
@@ -60,18 +51,14 @@ export default function StarRating({ value, onChange, size = 24 }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
       <div style={{ display: 'flex', gap: 4, cursor: 'pointer', userSelect: 'none' }}
-        onMouseDown={e => { dragging.current = true; onChange?.(getValue(e.clientX)); }}
-        onTouchStart={e => { dragging.current = true; onChange?.(getValue(e.touches[0].clientX)); }}
+        onMouseDown={e => { dragging.current = true; if (!isFocused.current) { const v = Math.min(5, Math.max(0.1, getValueFromStars(e.clientX, starRefs.current))); onChange?.(v); } }}
+        onTouchStart={e => { dragging.current = true; if (!isFocused.current) { const v = Math.min(5, Math.max(0.1, getValueFromStars(e.touches[0].clientX, starRefs.current))); onChange?.(v); } }}
       >
         {[1, 2, 3, 4, 5].map((n, i) => (
           <span key={n} ref={el => starRefs.current[i] = el}
             style={{ position: 'relative', display: 'inline-block', flexShrink: 0 }}>
             <Star size={size} fill="transparent" color="#DDD" strokeWidth={1.5} />
-            <span style={{
-              position: 'absolute', top: 0, left: 0,
-              overflow: 'hidden', width: fillWidth(n),
-              display: 'inline-block', pointerEvents: 'none',
-            }}>
+            <span style={{ position: 'absolute', top: 0, left: 0, overflow: 'hidden', width: fillWidth(n), display: 'inline-block', pointerEvents: 'none' }}>
               <Star size={size} fill="#FFB800" color="#FFB800" strokeWidth={1.5} />
             </span>
           </span>
@@ -79,11 +66,16 @@ export default function StarRating({ value, onChange, size = 24 }) {
       </div>
       <input
         type="text" inputMode="decimal"
-        value={focused ? inputVal : (value > 0 ? value : '')}
-        onChange={handleInput}
-        onFocus={() => { setFocused(true); setInputVal(value > 0 ? String(value) : ''); }}
-        onBlur={() => setFocused(false)}
-        style={{ width: 48, border: '1.5px solid #FFB800', borderRadius: 6, padding: '0', fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', fontFamily: 'inherit', color: '#FFB800', lineHeight: 1, height: 28 }}
+        value={inputVal}
+        onChange={e => {
+          const raw = e.target.value;
+          setInputVal(raw);
+          const n = parseFloat(raw);
+          if (!isNaN(n) && n > 0) onChange?.(Math.min(5, Math.max(0.1, Math.round(n * 10) / 10)));
+        }}
+        onFocus={() => { isFocused.current = true; }}
+        onBlur={() => { isFocused.current = false; setInputVal(value > 0 ? String(value) : ''); }}
+        style={{ width: 48, border: '1.5px solid #FFB800', borderRadius: 6, padding: 0, fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', fontFamily: 'inherit', color: '#FFB800', height: 28 }}
         placeholder="0.0"
       />
     </div>
@@ -101,11 +93,7 @@ export function StarDisplay({ value, size = 14 }) {
       {[1, 2, 3, 4, 5].map(n => (
         <span key={n} style={{ position: 'relative', display: 'inline-block', width: size, height: size }}>
           <Star size={size} fill="transparent" color="#DDD" strokeWidth={1.5} />
-          <span style={{
-            position: 'absolute', top: 0, left: 0,
-            overflow: 'hidden', width: fillWidth(n),
-            display: 'inline-block',
-          }}>
+          <span style={{ position: 'absolute', top: 0, left: 0, overflow: 'hidden', width: fillWidth(n), display: 'inline-block' }}>
             <Star size={size} fill="#FFB800" color="#FFB800" strokeWidth={1.5} />
           </span>
         </span>
