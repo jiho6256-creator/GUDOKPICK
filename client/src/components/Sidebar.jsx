@@ -87,7 +87,7 @@ export default function Sidebar() {
             width: 32, height: 32, borderRadius: 9,
             background: 'linear-gradient(135deg, var(--primary), var(--primary-light))',
             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16,
-          }}>🎯</div>
+          }}>⛏️</div>
           <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--text)', letterSpacing: -0.5 }}>구독픽</span>
         </div>
 
