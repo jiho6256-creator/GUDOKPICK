@@ -127,7 +127,7 @@ export default function Sidebar() {
               ) : (
                 <div style={{ padding: '16px 20px' }}>
                   <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 14 }}>소셜 로그인</p>
-                  <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/auth/naver`}
+                  <a href={`https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=uN9fdPdJAEJaccJbKpvD&redirect_uri=${encodeURIComponent('https://gudokpick.onrender.com/auth/naver/callback')}&state=gudokpick`}
                     style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 14px', borderRadius: 10, background: '#03C75A', color: '#fff', fontWeight: 700, fontSize: 14, textDecoration: 'none', marginBottom: 8 }}>
                     <span style={{ width: 24, height: 24, background: '#fff', borderRadius: 6, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#03C75A', fontWeight: 900, fontSize: 14 }}>N</span>
                     네이버로 로그인
