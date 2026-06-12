@@ -115,16 +115,6 @@ export default function Community() {
       {showForm && (
         <div style={{ background: 'var(--primary-bg)', border: '1.5px solid var(--primary)', borderRadius: 14, padding: '22px 24px', marginBottom: 24 }}>
           <h3 style={{ fontWeight: 700, marginBottom: 16, fontSize: 15 }}>새 게시글 작성</h3>
-          <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
-            {[{ key: 'general', label: '자유' }, { key: 'deal', label: '진행 중인 프로모션' }].map(c => (
-              <button key={c.key} onClick={() => setForm({ ...form, category: c.key })} style={{
-                padding: '7px 16px', borderRadius: 20, fontSize: 13, fontWeight: 600,
-                background: form.category === c.key ? 'var(--primary)' : '#fff',
-                color: form.category === c.key ? '#fff' : 'var(--text-secondary)',
-                border: '1px solid', borderColor: form.category === c.key ? 'var(--primary)' : 'var(--border)',
-              }}>{c.label}</button>
-            ))}
-          </div>
           {form.category === 'deal' && (
             <div style={{ marginBottom: 10 }}>
               <select value={form.service_name} onChange={e => setForm({ ...form, service_name: e.target.value })}
