@@ -14,7 +14,7 @@ const EMPTY = {
 };
 
 export default function Admin() {
-  const [authed, setAuthed] = useState(false);
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem('admin_authed') === '1');
   const [pw, setPw] = useState('');
   const [services, setServices] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -78,11 +78,11 @@ export default function Admin() {
           <Shield size={40} color="var(--primary)" style={{ marginBottom: 16 }} />
           <h2 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24 }}>관리자 로그인</h2>
           <input type="password" value={pw} onChange={e => setPw(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && (pw === ADMIN_KEY ? setAuthed(true) : alert('비밀번호가 틀렸습니다.'))}
+            onKeyDown={e => e.key === 'Enter' && (pw === ADMIN_KEY ? (sessionStorage.setItem('admin_authed', '1'), setAuthed(true)) : alert('비밀번호가 틀렸습니다.'))}
             placeholder="관리자 비밀번호"
             style={{ width: '100%', border: '1.5px solid var(--border)', borderRadius: 10, padding: '10px 14px', fontSize: 15, outline: 'none', fontFamily: 'inherit', marginBottom: 12, boxSizing: 'border-box' }}
           />
-          <button onClick={() => pw === ADMIN_KEY ? setAuthed(true) : alert('비밀번호가 틀렸습니다.')}
+          <button onClick={() => pw === ADMIN_KEY ? (sessionStorage.setItem('admin_authed', '1'), setAuthed(true)) : alert('비밀번호가 틀렸습니다.')}
             style={{ width: '100%', background: 'var(--primary)', color: '#fff', borderRadius: 10, padding: '12px', fontWeight: 700, fontSize: 15 }}>
             로그인
           </button>
