@@ -84,7 +84,7 @@ export default function Sidebar() {
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', flexShrink: 0 }} onClick={() => navigate('/ranking')}>
           <div style={{ fontSize: 28, marginRight: -6 }}>⛏️</div>
-          <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--text)', letterSpacing: -0.5 }}>구독픽</span>
+          <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--text)', letterSpacing: -0.5, marginLeft: -4 }}>구독픽</span>
         </div>
 
         {/* Nav items */}
