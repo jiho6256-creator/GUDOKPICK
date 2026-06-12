@@ -92,6 +92,12 @@ app.put('/api/reviews/:id', (req, res) => {
   res.json({ ok: true });
 });
 
+// DELETE all reviews (admin)
+app.delete('/api/admin/reviews/all', adminAuth, (req, res) => {
+  db.prepare('DELETE FROM reviews').run();
+  res.json({ ok: true });
+});
+
 // DELETE review (nickname 확인)
 app.delete('/api/reviews/:id', (req, res) => {
   const { nickname } = req.body;

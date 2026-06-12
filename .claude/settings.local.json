@@ -21,7 +21,9 @@
       "Bash(Write-Host \"DB deleted\")",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(curl -s https://gudokpick.onrender.com/api/services)",
+      "Bash(python -c \"import sys,json; services=json.load\\(sys.stdin\\); [print\\(s['id'], s['name'], s.get\\('review_count',0\\)\\) for s in services]\")"
     ]
   }
 }
