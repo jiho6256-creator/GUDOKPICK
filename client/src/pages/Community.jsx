@@ -125,10 +125,11 @@ export default function Community() {
               </select>
             </div>
           )}
-          <div style={{ marginBottom: 10 }}>
-            {naverUser && <p style={{ fontSize: 12, fontWeight: 700, color: '#03C75A', marginBottom: 6 }}>✓ {naverUser.nickname} (네이버 로그인)</p>}
+          <div style={{ marginBottom: 10, position: 'relative' }}>
             <input value={form.nickname} onChange={e => setForm({ ...form, nickname: e.target.value })}
-              placeholder="닉네임" maxLength={20} readOnly={!!naverUser} style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', background: naverUser ? 'var(--bg)' : '#fff' }} />
+              placeholder="닉네임" maxLength={20} readOnly={!!naverUser}
+              style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', background: naverUser ? 'var(--bg)' : '#fff', border: naverUser ? '1.5px solid #03C75A' : '1.5px solid var(--border)', padding: naverUser ? '22px 14px 8px' : '10px 14px' }} />
+            {naverUser && <span style={{ position: 'absolute', top: 7, left: 14, fontSize: 11, fontWeight: 700, color: '#03C75A' }}>✓ 네이버 로그인</span>}
           </div>
           <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })}
             placeholder="제목" maxLength={100}
@@ -318,10 +319,11 @@ export function PostDetail() {
 
         {/* 댓글 작성 */}
         <div style={{ background: 'var(--bg)', borderRadius: 12, padding: 16, marginTop: 8 }}>
-          <div style={{ marginBottom: 10 }}>
-            {naverUser && <p style={{ fontSize: 12, fontWeight: 700, color: '#03C75A', marginBottom: 6 }}>✓ {naverUser.nickname} (네이버 로그인)</p>}
+          <div style={{ marginBottom: 10, position: 'relative' }}>
             <input value={commentForm.nickname} onChange={e => setCommentForm({ ...commentForm, nickname: e.target.value })}
-              placeholder="닉네임" maxLength={20} readOnly={!!naverUser} style={{ ...inputStyle, flex: '0 0 160px', background: naverUser ? 'var(--bg)' : '#fff' }} />
+              placeholder="닉네임" maxLength={20} readOnly={!!naverUser}
+              style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', background: naverUser ? 'var(--bg)' : '#fff', border: naverUser ? '1.5px solid #03C75A' : '1.5px solid var(--border)', padding: naverUser ? '22px 14px 8px' : '10px 14px' }} />
+            {naverUser && <span style={{ position: 'absolute', top: 7, left: 14, fontSize: 11, fontWeight: 700, color: '#03C75A' }}>✓ 네이버 로그인</span>}
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <textarea value={commentForm.content} onChange={e => setCommentForm({ ...commentForm, content: e.target.value })}
