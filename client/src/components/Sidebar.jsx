@@ -83,11 +83,7 @@ export default function Sidebar() {
       <div className="header-inner" style={{ display: 'flex', alignItems: 'center', height: 60, gap: 32, maxWidth: 1000, margin: '0 auto', padding: '0 40px', width: '100%', boxSizing: 'border-box' }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', flexShrink: 0 }} onClick={() => navigate('/ranking')}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 9,
-            background: 'linear-gradient(135deg, var(--primary), var(--primary-light))',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16,
-          }}>⛏️</div>
+          <div style={{ fontSize: 24 }}>⛏️</div>
           <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--text)', letterSpacing: -0.5 }}>구독픽</span>
         </div>
 
