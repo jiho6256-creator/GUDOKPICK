@@ -88,7 +88,7 @@ export default function Community() {
   const likedPosts = getLikedPosts();
 
   return (
-    <div style={{ padding: '32px 40px', maxWidth: 1000, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+    <div className="page-wrap">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
         <h1 style={{ fontSize: 24, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 10 }}>
           <span style={{ fontSize: 22, display: 'inline-block', transform: 'translateY(-3px) translateX(4px)' }}>👥</span> 커뮤니티
@@ -261,7 +261,7 @@ export function PostDetail() {
   if (!post) return <div style={{ padding: 60, textAlign: 'center', color: 'var(--text-tertiary)' }}>게시글을 찾을 수 없습니다.</div>;
 
   return (
-    <div style={{ padding: '32px 40px', maxWidth: 1000, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+    <div className="page-wrap">
       <button onClick={() => navigate('/community')} style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-secondary)', fontSize: 14, fontWeight: 600, marginBottom: 20 }}>
         <ArrowLeft size={18} /> 목록으로 돌아가기
       </button>

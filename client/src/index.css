@@ -56,3 +56,31 @@ p { margin: 0; }
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #D0D0E0; border-radius: 3px; }
+
+/* ── Responsive ── */
+.page-wrap {
+  padding: 32px 40px;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .page-wrap { padding: 16px 14px; }
+
+  /* header nav: hide text, show emoji only */
+  .nav-label { display: none; }
+  .header-inner { padding: 0 12px !important; gap: 8px !important; }
+  .nav-btn { padding: 6px 10px !important; }
+  .login-btn span.avatar { width: 18px !important; height: 18px !important; font-size: 10px !important; }
+
+  /* ranking table: hide price & rating columns, show inside row */
+  .rank-col-price, .rank-col-rating, .rank-header { display: none !important; }
+  .rank-row { grid-template-columns: 44px 1fr !important; }
+  .rank-row-meta { display: flex !important; }
+
+  /* service detail grids */
+  .score-grid { grid-template-columns: 1fr !important; }
+  .review-form-grid { grid-template-columns: 1fr !important; }
+}

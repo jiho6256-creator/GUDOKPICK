@@ -74,7 +74,7 @@ export default function Carousel() {
           return (
           <Wrapper key={i} {...wrapperProps} style={{
             minWidth: '100%', background: card.bg,
-            borderRadius: 16, padding: '32px 40px',
+            borderRadius: 16, padding: 'clamp(20px, 5vw, 32px) clamp(16px, 5vw, 40px)',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             textDecoration: 'none', cursor: href ? 'pointer' : 'default',
           }}>
@@ -84,8 +84,8 @@ export default function Carousel() {
                 background: 'rgba(255,255,255,0.2)', borderRadius: 20,
                 padding: '3px 12px', marginBottom: 12, display: 'inline-block',
               }}>{card.tag}</span>
-              <h2 style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 8, letterSpacing: -0.5 }}>{card.title}</h2>
-              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.82)', maxWidth: 480, lineHeight: 1.6 }}>{card.description}</p>
+              <h2 style={{ fontSize: 'clamp(16px, 4vw, 22px)', fontWeight: 800, color: '#fff', marginBottom: 8, letterSpacing: -0.5 }}>{card.title}</h2>
+              <p style={{ fontSize: 'clamp(12px, 3vw, 14px)', color: 'rgba(255,255,255,0.82)', maxWidth: 480, lineHeight: 1.6 }}>{card.description}</p>
             </div>
             <div style={{ fontSize: 72, flexShrink: 0, marginLeft: 32, opacity: 0.9 }}>{card.emoji}</div>
           </Wrapper>

@@ -45,7 +45,7 @@ export default function Calculator() {
   const filtered = categoryFilter === 'all' ? services : services.filter(s => s.category === categoryFilter);
 
   return (
-    <div style={{ padding: '32px 40px', maxWidth: 1000, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+    <div className="page-wrap">
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
         <CalcIcon size={26} color="var(--primary)" />
         <h1 style={{ fontSize: 26, fontWeight: 800, letterSpacing: -0.5 }}>구독료 계산기</h1>

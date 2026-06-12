@@ -37,7 +37,7 @@ export default function King() {
   }, {});
 
   return (
-    <div style={{ padding: '32px 40px', maxWidth: 1000, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+    <div className="page-wrap">
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 28 }}>
         <span style={{ fontSize: 26, display: 'inline-block', transform: 'translateY(-4px) translateX(6px)' }}>👑</span>
         <h1 style={{ fontSize: 24, fontWeight: 800 }}>구독왕</h1>

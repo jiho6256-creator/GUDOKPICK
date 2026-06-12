@@ -121,7 +121,7 @@ export default function Admin() {
   }, {});
 
   return (
-    <div style={{ padding: '32px 40px', maxWidth: 1000, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+    <div className="page-wrap">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 }}>
         <h1 style={{ fontSize: 24, fontWeight: 800 }}>🛠 관리자 페이지</h1>
         {tab === 'services' && (

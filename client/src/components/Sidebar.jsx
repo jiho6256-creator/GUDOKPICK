@@ -74,7 +74,7 @@ export default function Sidebar() {
       background: '#fff', borderBottom: '1px solid var(--border)',
       zIndex: 100, boxShadow: '0 2px 12px rgba(91,75,219,0.06)',
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', height: 60, gap: 32, maxWidth: 1000, margin: '0 auto', padding: '0 40px', width: '100%', boxSizing: 'border-box' }}>
+      <div className="header-inner" style={{ display: 'flex', alignItems: 'center', height: 60, gap: 32, maxWidth: 1000, margin: '0 auto', padding: '0 40px', width: '100%', boxSizing: 'border-box' }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', flexShrink: 0 }} onClick={() => navigate('/ranking')}>
           <div style={{
@@ -90,7 +90,7 @@ export default function Sidebar() {
           {NAV.map(({ path, icon: Icon, emoji, emojiY, emojiMR, label }) => {
             const active = location.pathname === path;
             return (
-              <button key={path} onClick={() => navigate(path)} style={{
+              <button key={path} className="nav-btn" onClick={() => navigate(path)} style={{
                 display: 'flex', alignItems: 'center', gap: 7,
                 padding: '7px 14px', borderRadius: 10,
                 background: active ? 'var(--primary-bg)' : 'transparent',
@@ -99,7 +99,7 @@ export default function Sidebar() {
                 transition: 'all 0.15s',
               }}>
                 {emoji ? <span style={{ fontSize: 14, lineHeight: 1, display: 'inline-block', transform: `translateY(${emojiY || '-3px'})`, marginRight: emojiMR ?? -4 }}>{emoji}</span> : <Icon size={16} strokeWidth={active ? 2.2 : 1.8} />}
-                {label}
+                <span className="nav-label">{label}</span>
               </button>
             );
           })}

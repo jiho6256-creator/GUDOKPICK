@@ -68,7 +68,7 @@ export default function ServiceDetail() {
 
 
   return (
-    <div style={{ padding: '32px 40px', maxWidth: 1000, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+    <div className="page-wrap">
       {/* Back */}
       <button onClick={() => navigate(-1)} style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--text-secondary)', fontSize: 14, fontWeight: 600, marginBottom: 20 }}>
         <ArrowLeft size={18} /> 목록으로 돌아가기
@@ -98,7 +98,7 @@ export default function ServiceDetail() {
       </div>
 
       {/* Score bar */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14, marginBottom: 24 }}>
+      <div className="score-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14, marginBottom: 24 }}>
         <div style={{ background: 'var(--card)', borderRadius: 'var(--radius)', boxShadow: 'var(--shadow)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'row', alignItems: 'center', textAlign: 'center' }}>
           <div style={{ flex: 1, padding: '20px' }}>
             <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>월 구독료</p>
@@ -157,7 +157,7 @@ export default function ServiceDetail() {
 
             {showReviewForm && (
               <div style={{ background: 'var(--bg)', borderRadius: 12, padding: 18, marginBottom: 18 }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
+                <div className="review-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
                   <div style={{ position: 'relative' }}>
                     <input value={reviewForm.nickname} onChange={e => setReviewForm({ ...reviewForm, nickname: e.target.value })}
                       placeholder="닉네임" maxLength={20} readOnly={!!naverUser}

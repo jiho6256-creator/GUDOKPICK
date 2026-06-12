@@ -29,7 +29,7 @@ const navigate = useNavigate();
   }, [category]);
 
   return (
-    <div style={{ padding: '32px 40px', maxWidth: 1000, margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+    <div className="page-wrap">
       <Carousel />
 
       {/* Header */}
@@ -65,13 +65,13 @@ const navigate = useNavigate();
         </div>
       ) : (
         <div style={{ background: 'var(--card)', borderRadius: 'var(--radius)', overflow: 'hidden', boxShadow: 'var(--shadow)', border: '1px solid var(--border)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '60px 1fr 120px 120px', gap: 16, padding: '12px 20px', background: 'var(--bg)', borderBottom: '1px solid var(--border)' }}>
+          <div className="rank-header" style={{ display: 'grid', gridTemplateColumns: '60px 1fr 120px 120px', gap: 16, padding: '12px 20px', background: 'var(--bg)', borderBottom: '1px solid var(--border)' }}>
             {['순위', '서비스', '월 구독료', '유저 평점'].map(h => (
               <span key={h} style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-tertiary)' }}>{h}</span>
             ))}
           </div>
           {ranking.map((s, i) => (
-            <div key={s.id} onClick={() => navigate(`/service/${s.id}`)}
+            <div key={s.id} className="rank-row" onClick={() => navigate(`/service/${s.id}`)}
               style={{
                 display: 'grid', gridTemplateColumns: '60px 1fr 120px 120px',
                 gap: 16, padding: '14px 20px', alignItems: 'center',
@@ -86,10 +86,19 @@ const navigate = useNavigate();
               </span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <ServiceLogo logo={s.logo} color={s.color} name={s.name} size={40} />
-                <div style={{ fontWeight: 700, fontSize: 14 }}>{s.name}</div>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: 14 }}>{s.name}</div>
+                  <div className="rank-row-meta" style={{ display: 'none', alignItems: 'center', gap: 8, marginTop: 3 }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--primary)' }}>{s.monthly_price.toLocaleString()}원</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                      <Star size={11} fill="#FFB800" color="#FFB800" />
+                      <span style={{ fontSize: 12, fontWeight: 600 }}>{s.avg_rating || '—'}</span>
+                    </span>
+                  </div>
+                </div>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--primary)' }}>{s.monthly_price.toLocaleString()}원</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span className="rank-col-price" style={{ fontSize: 14, fontWeight: 700, color: 'var(--primary)' }}>{s.monthly_price.toLocaleString()}원</span>
+              <div className="rank-col-rating" style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
                 <Star size={13} fill="#FFB800" color="#FFB800" />
                 <span style={{ fontSize: 14, fontWeight: 600 }}>{s.avg_rating || '—'}</span>
                 <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>({s.review_count})</span>
