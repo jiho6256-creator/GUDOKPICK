@@ -153,31 +153,6 @@ if (count.c === 0) {
   });
   insertMany();
 
-  // Seed reviews
-  const insertReview = db.prepare(`
-    INSERT INTO reviews (service_id, nickname, rating, comment) VALUES (?, ?, ?, ?)
-  `);
-
-  const reviews = [
-    [1, '드라마마니아', 5, '오리지널 콘텐츠 퀄리티가 압도적이에요. 오징어게임, 더글로리 등 믿고 봅니다!'],
-    [1, '넷플릭스팬', 4, '콘텐츠는 좋은데 가격이 좀 비싸졌어요. 그래도 만족합니다.'],
-    [2, '티빙유저', 4, 'tvN 드라마 실시간으로 볼 수 있어서 좋아요. 야구도 볼 수 있어서 강추!'],
-    [5, '영화광', 4, '왓챠피디아 평점 시스템이 독보적이에요. 영화 취향 맞춤 추천 최고'],
-    [7, '쇼핑고수', 5, '로켓배송 무료에 쿠팡플레이까지 포함이라 완전 가성비 갑입니다!'],
-    [11, '음악매니아', 5, '스포티파이 추천 알고리즘이 진짜 신기해요. Discover Weekly 항상 기대합니다.'],
-    [15, 'AI유저', 5, 'GPT-4o 속도와 성능이 엄청나요. 코딩할 때 필수품이 됐어요.'],
-    [16, '개발자', 5, 'Claude Pro 긴 문서 분석이 탁월해요. 코드 리뷰도 섬세하게 해줍니다.'],
-    [20, '배달족', 4, '배민클럽 쿠폰이 매주 나와서 실질적으로 많이 아끼게 되더라고요.'],
-    [23, '게이머', 5, 'Xbox 게임패스 가성비 최고! 매달 새 게임 나오고 Day One 출시 게임도 있어서 진짜 좋아요.'],
-  ];
-
-  const insertReviewsTx = db.transaction(() => {
-    for (const r of reviews) {
-      insertReview.run(...r);
-    }
-  });
-  insertReviewsTx();
-
   // Seed promotions
   const insertPromo = db.prepare(`
     INSERT INTO promotions (service_id, title, description, discount_type, discount_value, start_date, end_date, link)
