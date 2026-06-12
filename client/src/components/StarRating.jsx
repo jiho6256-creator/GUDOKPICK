@@ -41,7 +41,7 @@ export default function StarRating({ value, onChange, size = 24 }) {
     };
   }, [onChange]);
 
-  const display = hover ?? value;
+  const display = value;
 
   return (
     <div
@@ -54,13 +54,8 @@ export default function StarRating({ value, onChange, size = 24 }) {
         onChange?.(v);
         setHover(v);
       }}
-      onMouseMove={e => {
-        if (!dragging.current) {
-          const rect = containerRef.current.getBoundingClientRect();
-          setHover(Math.min(5, Math.max(0.5, getValueFromRect(e.clientX, rect))));
-        }
-      }}
-      onMouseLeave={() => { if (!dragging.current) setHover(null); }}
+      onMouseMove={e => { if (!dragging.current) return; }}
+      onMouseLeave={() => {}}
       onTouchStart={e => {
         dragging.current = true;
         const rect = containerRef.current.getBoundingClientRect();
