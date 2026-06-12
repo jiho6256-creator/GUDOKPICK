@@ -189,7 +189,11 @@ export default function ServiceDetail() {
             {service.reviews?.length === 0 && !showReviewForm && (
               <p style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '28px 0' }}>첫 리뷰를 작성해보세요!</p>
             )}
-            {service.reviews?.map(r => (
+            {[...(service.reviews || [])].sort((a, b) => {
+              if (naverUser?.nickname === a.nickname) return -1;
+              if (naverUser?.nickname === b.nickname) return 1;
+              return 0;
+            }).map(r => (
               <div key={r.id} style={{ borderBottom: '1px solid var(--border)', paddingBottom: 14, marginBottom: 14, paddingLeft: 20 }}>
                 <>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
