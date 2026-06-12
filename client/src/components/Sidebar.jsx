@@ -71,6 +71,7 @@ export default function Sidebar() {
     setGuestInput('');
     setShowLoginModal(false);
     window.dispatchEvent(new Event('auth-change'));
+    window.location.reload();
   };
 
   return (
