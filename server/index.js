@@ -334,5 +334,32 @@ app.get('/auth/naver/callback', async (req, res) => {
   }
 });
 
+// ── Google OAuth ──────────────────────────────────────────────
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const GOOGLE_CALLBACK = 'https://gudokpick.onrender.com/auth/google/callback';
+
+app.get('/auth/google/callback', async (req, res) => {
+  const { code } = req.query;
+  try {
+    const tokenRes = await axios.post('https://oauth2.googleapis.com/token', {
+      code,
+      client_id: GOOGLE_CLIENT_ID,
+      client_secret: GOOGLE_CLIENT_SECRET,
+      redirect_uri: GOOGLE_CALLBACK,
+      grant_type: 'authorization_code',
+    });
+    const accessToken = tokenRes.data.access_token;
+    const profileRes = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    const { name, id } = profileRes.data;
+    const displayName = name || `google_${id.slice(0, 8)}`;
+    res.redirect(`${CLIENT_URL}?naver_nickname=${encodeURIComponent(displayName)}&naver_id=${encodeURIComponent('google_' + id)}&login_type=google`);
+  } catch (e) {
+    res.redirect(`${CLIENT_URL}?login_error=1`);
+  }
+});
+
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

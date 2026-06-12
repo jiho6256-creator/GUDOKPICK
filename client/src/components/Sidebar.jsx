@@ -32,10 +32,12 @@ export default function Sidebar() {
     const params = new URLSearchParams(window.location.search);
     const nn = params.get('naver_nickname');
     const ni = params.get('naver_id');
+    const lt = params.get('login_type') || 'naver';
     if (nn && ni) {
       localStorage.setItem('naver_nickname', nn);
       localStorage.setItem('naver_id', ni);
-      setNaverUser({ nickname: nn, id: ni });
+      localStorage.setItem('login_type', lt);
+      setNaverUser({ nickname: nn, id: ni, type: lt });
       window.history.replaceState({}, '', window.location.pathname);
     }
   }, []);
@@ -120,8 +122,8 @@ export default function Sidebar() {
           }}>
             {naverUser ? (
               <>
-                <span style={{ width: 22, height: 22, borderRadius: '50%', background: naverUser.type === 'guest' ? '#6B7280' : '#03C75A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 800 }}>
-                  {naverUser.type === 'guest' ? 'G' : 'N'}
+                <span style={{ width: 22, height: 22, borderRadius: '50%', background: naverUser.type === 'guest' ? '#6B7280' : naverUser.type === 'google' ? '#4285F4' : '#03C75A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 800 }}>
+                  {naverUser.type === 'guest' ? 'G' : naverUser.type === 'google' ? 'G' : 'N'}
                 </span>
                 {naverUser.nickname}
               </>
@@ -136,7 +138,7 @@ export default function Sidebar() {
             }}>
               {naverUser ? (
                 <div style={{ padding: '16px 20px' }}>
-                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4 }}>{naverUser?.type === 'guest' ? '게스트' : '네이버 로그인'}</p>
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4 }}>{naverUser?.type === 'guest' ? '게스트' : naverUser?.type === 'google' ? '구글 로그인' : '네이버 로그인'}</p>
                   <p style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>{naverUser.nickname}</p>
                   <button onClick={logout} style={{ width: '100%', padding: '10px', borderRadius: 10, background: '#f3f4f6', color: 'var(--text)', fontWeight: 700, fontSize: 14 }}>
                     로그아웃
@@ -154,10 +156,11 @@ export default function Sidebar() {
                     <span style={{ width: 24, height: 24, background: '#3C1E1E', borderRadius: 6, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>💬</span>
                     카카오로 로그인
                   </button>
-                  <button disabled style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 14px', borderRadius: 10, background: '#fff', color: '#3c4043', fontWeight: 700, fontSize: 14, width: '100%', border: '1.5px solid #dadce0', opacity: 0.5, cursor: 'not-allowed' }}>
+                  <a href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=205912276871-1e3mebalfvpc1iu4r8fja1k2249iu158.apps.googleusercontent.com&redirect_uri=${encodeURIComponent('https://gudokpick.onrender.com/auth/google/callback')}&response_type=code&scope=profile`}
+                    style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 14px', borderRadius: 10, background: '#fff', color: '#3c4043', fontWeight: 700, fontSize: 14, width: '100%', border: '1.5px solid #dadce0', textDecoration: 'none', boxSizing: 'border-box' }}>
                     <span style={{ width: 24, height: 24, background: '#fff', borderRadius: 6, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>G</span>
                     구글로 로그인
-                  </button>
+                  </a>
                   <p style={{ fontSize: 11, color: 'var(--text-tertiary)', textAlign: 'center', marginTop: 12, marginBottom: 14 }}>카카오/구글은 준비 중입니다</p>
                   <div style={{ borderTop: '1px solid var(--border)', paddingTop: 14 }}>
                     <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 10 }}>게스트로 시작하기</p>
