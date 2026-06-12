@@ -71,7 +71,7 @@ app.get('/api/services/:id', (req, res) => {
 app.post('/api/services/:id/reviews', (req, res) => {
   const { nickname, rating, comment } = req.body;
   if (!nickname || !rating) return res.status(400).json({ error: 'nickname and rating required' });
-  if (rating < 1 || rating > 5) return res.status(400).json({ error: 'rating must be 1-5' });
+  if (rating < 0.5 || rating > 5) return res.status(400).json({ error: 'rating must be 0.5-5' });
 
   const result = db.prepare(
     'INSERT INTO reviews (service_id, nickname, rating, comment) VALUES (?, ?, ?, ?)'
