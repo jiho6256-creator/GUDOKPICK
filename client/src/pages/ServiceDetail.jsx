@@ -191,39 +191,29 @@ export default function ServiceDetail() {
             )}
             {service.reviews?.map(r => (
               <div key={r.id} style={{ borderBottom: '1px solid var(--border)', paddingBottom: 14, marginBottom: 14, paddingLeft: 20 }}>
-                {editingReview === r.id ? (
-                  <div style={{ background: 'var(--bg)', borderRadius: 10, padding: 14 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{r.nickname}</span>
-                      <StarRating value={editForm.rating} onChange={v => setEditForm({ ...editForm, rating: v })} size={22} />
-                    </div>
-                    <textarea value={editForm.comment} onChange={e => setEditForm({ ...editForm, comment: e.target.value })}
-                      maxLength={300} rows={2}
-                      style={{ width: '100%', border: '1.5px solid var(--border)', borderRadius: 8, padding: '8px 10px', fontSize: 13, resize: 'none', outline: 'none', fontFamily: 'inherit', marginBottom: 10, boxSizing: 'border-box' }} />
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <button onClick={async () => {
-                        if (!editForm.rating) return;
-                        try {
-                          await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/reviews/${r.id}`, { ...editForm, nickname: r.nickname });
-                          setEditingReview(null);
-                          load();
-                        } catch { alert('닉네임이 일치하지 않습니다.'); }
-                      }} style={{ display: 'flex', alignItems: 'center', gap: 4, background: 'var(--primary)', color: '#fff', borderRadius: 8, padding: '6px 14px', fontWeight: 700, fontSize: 13 }}>
-                        <Check size={13} /> 저장
-                      </button>
-                      <button onClick={() => setEditingReview(null)} style={{ display: 'flex', alignItems: 'center', gap: 4, background: '#fff', color: 'var(--text-secondary)', borderRadius: 8, padding: '6px 14px', fontWeight: 700, fontSize: 13, border: '1px solid var(--border)' }}>
-                        <X size={13} /> 취소
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                      <span style={{ fontWeight: 700, fontSize: 14 }}>{r.nickname}</span>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <StarDisplay value={r.rating} size={13} />
-                        <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{r.created_at?.slice(0, 10)}</span>
-                        {naverUser?.nickname === r.nickname && <>
+                <>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                    <span style={{ fontWeight: 700, fontSize: 14 }}>{r.nickname}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      {editingReview === r.id
+                        ? <StarRating value={editForm.rating} onChange={v => setEditForm({ ...editForm, rating: v })} size={18} />
+                        : <StarDisplay value={r.rating} size={13} />}
+                      <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{r.created_at?.slice(0, 10)}</span>
+                      {naverUser?.nickname === r.nickname && (editingReview === r.id ? <>
+                        <button onClick={async () => {
+                          if (!editForm.rating) return;
+                          try {
+                            await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/reviews/${r.id}`, { ...editForm, nickname: r.nickname });
+                            setEditingReview(null);
+                            load();
+                          } catch { alert('수정에 실패했습니다.'); }
+                        }} style={{ display: 'flex', alignItems: 'center', gap: 3, color: 'var(--primary)', fontSize: 12, padding: '2px 6px', borderRadius: 6, border: '1px solid var(--primary)', background: 'var(--primary-bg)' }}>
+                          <Check size={11} /> 저장
+                        </button>
+                        <button onClick={() => setEditingReview(null)} style={{ display: 'flex', alignItems: 'center', gap: 3, color: 'var(--text-secondary)', fontSize: 12, padding: '2px 6px', borderRadius: 6, border: '1px solid var(--border)', background: '#fff' }}>
+                          <X size={11} /> 취소
+                        </button>
+                      </> : <>
                         <button onClick={() => { setEditingReview(r.id); setEditForm({ nickname: naverUser.nickname, rating: r.rating, comment: r.comment || '' }); }}
                           style={{ display: 'flex', alignItems: 'center', gap: 3, color: 'var(--text-secondary)', fontSize: 12, padding: '2px 6px', borderRadius: 6, border: '1px solid var(--border)', background: '#fff' }}>
                           <Pencil size={11} /> 수정
@@ -235,12 +225,15 @@ export default function ServiceDetail() {
                         }} style={{ display: 'flex', alignItems: 'center', gap: 3, color: '#DC2626', fontSize: 12, padding: '2px 6px', borderRadius: 6, border: '1px solid #FCA5A5', background: '#FEF2F2' }}>
                           <X size={11} /> 삭제
                         </button>
-                        </>}
-                      </div>
+                      </>)}
                     </div>
-                    {r.comment && <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{r.comment}</p>}
-                  </>
-                )}
+                  </div>
+                  {editingReview === r.id
+                    ? <textarea value={editForm.comment} onChange={e => setEditForm({ ...editForm, comment: e.target.value })}
+                        maxLength={300} rows={2} autoFocus
+                        style={{ width: '100%', border: '1.5px solid var(--primary)', borderRadius: 8, padding: '8px 10px', fontSize: 14, resize: 'none', outline: 'none', fontFamily: 'inherit', boxSizing: 'border-box', color: 'var(--text)' }} />
+                    : r.comment && <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6 }}>{r.comment}</p>}
+                </>
               </div>
             ))}
           </div>
