@@ -194,10 +194,7 @@ export default function ServiceDetail() {
                 {editingReview === r.id ? (
                   <div style={{ background: 'var(--bg)', borderRadius: 10, padding: 14 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-                      <span style={{ fontSize: 13, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>닉네임 확인:</span>
-                      <input value={editForm.nickname} onChange={e => setEditForm({ ...editForm, nickname: e.target.value })}
-                        placeholder={r.nickname} maxLength={20}
-                        style={{ border: '1.5px solid var(--border)', borderRadius: 8, padding: '6px 10px', fontSize: 13, outline: 'none', fontFamily: 'inherit', flex: 1 }} />
+                      <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text)' }}>{r.nickname}</span>
                       <StarRating value={editForm.rating} onChange={v => setEditForm({ ...editForm, rating: v })} size={22} />
                     </div>
                     <textarea value={editForm.comment} onChange={e => setEditForm({ ...editForm, comment: e.target.value })}
@@ -205,9 +202,9 @@ export default function ServiceDetail() {
                       style={{ width: '100%', border: '1.5px solid var(--border)', borderRadius: 8, padding: '8px 10px', fontSize: 13, resize: 'none', outline: 'none', fontFamily: 'inherit', marginBottom: 10, boxSizing: 'border-box' }} />
                     <div style={{ display: 'flex', gap: 8 }}>
                       <button onClick={async () => {
-                        if (!editForm.nickname || !editForm.rating) return;
+                        if (!editForm.rating) return;
                         try {
-                          await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/reviews/${r.id}`, editForm);
+                          await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/reviews/${r.id}`, { ...editForm, nickname: r.nickname });
                           setEditingReview(null);
                           load();
                         } catch { alert('닉네임이 일치하지 않습니다.'); }
