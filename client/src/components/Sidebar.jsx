@@ -161,8 +161,8 @@ export default function Sidebar() {
                     카카오로 로그인
                   </button>
                   <a href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=205912276871-1e3mebalfvpc1iu4r8fja1k2249iu158.apps.googleusercontent.com&redirect_uri=${encodeURIComponent('https://gudokpick.onrender.com/auth/google/callback')}&response_type=code&scope=profile`}
-                    style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 14px', borderRadius: 10, background: '#fff', color: '#3c4043', fontWeight: 700, fontSize: 14, width: '100%', border: '1.5px solid #dadce0', textDecoration: 'none', boxSizing: 'border-box' }}>
-                    <span style={{ width: 24, height: 24, background: '#fff', borderRadius: 6, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>G</span>
+                    style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 14px', borderRadius: 10, background: '#4B5563', color: '#fff', fontWeight: 700, fontSize: 14, textDecoration: 'none', marginBottom: 8 }}>
+                    <span style={{ width: 24, height: 24, background: '#fff', borderRadius: 6, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#4B5563', fontSize: 14, fontWeight: 900, lineHeight: 1 }}>G</span>
                     구글로 로그인
                   </a>
                   <p style={{ fontSize: 11, color: 'var(--text-tertiary)', textAlign: 'center', marginTop: 12, marginBottom: 14 }}>카카오/구글은 준비 중입니다</p>
