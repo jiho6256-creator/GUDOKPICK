@@ -213,7 +213,7 @@ export default function Admin() {
               {grouped[cat].map(s => (
                 <div key={s.id}>
                   {editingId === s.id ? (
-                    <ServiceForm form={form} setForm={setForm} onSave={saveEdit} onCancel={() => setEditingId(null)} />
+                    <ServiceForm form={form} setForm={setForm} onSave={saveEdit} onCancel={() => setEditingId(null)} onDelete={() => { setEditingId(null); deleteService(s.id, s.name); }} />
                   ) : (
                     <div onClick={() => startEdit(s)} style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 100px auto', gap: 12, padding: '14px 18px', borderBottom: '1px solid var(--border)', alignItems: 'center', cursor: 'pointer' }}
                       onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-bg)'}
@@ -250,7 +250,7 @@ export default function Admin() {
   );
 }
 
-function ServiceForm({ form, setForm, onSave, onCancel, isNew }) {
+function ServiceForm({ form, setForm, onSave, onCancel, onDelete, isNew }) {
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
   const featStr = (form.features || []).join(', ');
 
@@ -297,6 +297,11 @@ function ServiceForm({ form, setForm, onSave, onCancel, isNew }) {
         <button onClick={onCancel} style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', color: 'var(--text-secondary)', borderRadius: 10, padding: '10px 20px', fontWeight: 700, fontSize: 14, border: '1px solid var(--border)' }}>
           <X size={15} /> 취소
         </button>
+        {!isNew && onDelete && (
+          <button onClick={onDelete} style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#FEE2E2', color: '#DC2626', borderRadius: 10, padding: '10px 20px', fontWeight: 700, fontSize: 14, marginLeft: 'auto' }}>
+            <Trash2 size={15} /> 삭제
+          </button>
+        )}
       </div>
     </div>
   );
