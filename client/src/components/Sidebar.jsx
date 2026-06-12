@@ -57,6 +57,7 @@ export default function Sidebar() {
     setNaverUser(null);
     setShowLoginModal(false);
     window.dispatchEvent(new Event('auth-change'));
+    window.location.reload();
   };
 
   const guestLogin = () => {
