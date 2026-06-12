@@ -185,7 +185,7 @@ export default function ServiceDetail() {
                       <button onClick={async () => {
                         if (!editForm.nickname || !editForm.rating) return;
                         try {
-                          await axios.put(`http://localhost:4000/api/reviews/${r.id}`, editForm);
+                          await axios.put(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/reviews/${r.id}`, editForm);
                           setEditingReview(null);
                           load();
                         } catch { alert('닉네임이 일치하지 않습니다.'); }

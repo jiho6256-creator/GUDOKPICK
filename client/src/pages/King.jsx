@@ -4,7 +4,7 @@ import { Crown, Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
 import axios from 'axios';
 import ServiceLogo from '../components/ServiceLogo';
 
-const api = axios.create({ baseURL: 'http://localhost:4000' });
+const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000' });
 
 const CATEGORY_LABELS = { ott: 'OTT', shopping: '쇼핑', music: '음악', ai: 'AI', food: '배달', game: '게임' };
 

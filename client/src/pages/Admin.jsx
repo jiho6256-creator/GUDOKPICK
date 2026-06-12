@@ -3,7 +3,7 @@ import { Plus, Edit2, Trash2, Save, X, ChevronDown, ChevronUp, Shield, Image } f
 import axios from 'axios';
 
 const ADMIN_KEY = '1234';
-const api = axios.create({ baseURL: 'http://localhost:4000', headers: { 'x-admin-key': ADMIN_KEY } });
+const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000', headers: { 'x-admin-key': ADMIN_KEY } });
 
 const CATEGORIES = ['ott', 'shopping', 'music', 'ai', 'food', 'game'];
 const CATEGORY_LABELS = { ott: 'OTT', shopping: '쇼핑', music: '음악', ai: 'AI', food: '배달', game: '게임' };

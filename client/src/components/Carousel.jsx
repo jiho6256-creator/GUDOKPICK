@@ -9,7 +9,7 @@ export default function Carousel() {
   const resumeTimeoutRef = useRef(null);
 
   useEffect(() => {
-    axios.get('http://localhost:4000/api/carousel').then(r => setCards(r.data));
+    axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/api/carousel`).then(r => setCards(r.data));
   }, []);
 
   const extended = cards.length > 0 ? [...cards, cards[0]] : [];
