@@ -343,7 +343,7 @@ export function PostDetail() {
 
 function PlatformBadge({ naverId }) {
   if (!naverId) return null;
-  if (naverId.startsWith('google_')) return <span style={{ fontSize: 10, fontWeight: 800, background: '#4285F4', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>G</span>;
+  if (naverId.startsWith('google_')) return <span style={{ fontSize: 10, fontWeight: 800, background: '#9CA3AF', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>G</span>;
   if (naverId.startsWith('guest_')) return <span style={{ fontSize: 10, fontWeight: 800, background: '#9CA3AF', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>게스트</span>;
   return <span style={{ fontSize: 10, fontWeight: 800, background: '#03C75A', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>N</span>;
 }
