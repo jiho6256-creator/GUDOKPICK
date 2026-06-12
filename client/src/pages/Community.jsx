@@ -14,7 +14,8 @@ const CATEGORIES = [
 function getNaverUser() {
   const n = localStorage.getItem('naver_nickname');
   const i = localStorage.getItem('naver_id');
-  return n && i ? { nickname: n, id: i } : null;
+  const t = localStorage.getItem('login_type') || 'naver';
+  return n && i ? { nickname: n, id: i, type: t } : null;
 }
 
 function getClientId() {
@@ -129,7 +130,7 @@ export default function Community() {
             <input value={form.nickname} onChange={e => setForm({ ...form, nickname: e.target.value })}
               placeholder="닉네임" maxLength={20} readOnly={!!naverUser}
               style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', background: naverUser ? 'var(--bg)' : '#fff', border: naverUser ? '1.5px solid #03C75A' : '1.5px solid var(--border)', padding: naverUser ? '22px 14px 8px' : '10px 14px' }} />
-            {naverUser && <span style={{ position: 'absolute', top: 7, left: 14, fontSize: 11, fontWeight: 700, color: '#03C75A' }}>✓ 네이버 로그인</span>}
+            {naverUser && <span style={{ position: 'absolute', top: 7, left: 14, fontSize: 11, fontWeight: 700, color: naverUser.type === 'guest' ? '#6B7280' : '#03C75A' }}>✓ {naverUser.type === 'guest' ? '게스트' : '네이버 로그인'}</span>}
           </div>
           <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })}
             placeholder="제목" maxLength={100}
@@ -323,7 +324,7 @@ export function PostDetail() {
             <input value={commentForm.nickname} onChange={e => setCommentForm({ ...commentForm, nickname: e.target.value })}
               placeholder="닉네임" maxLength={20} readOnly={!!naverUser}
               style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', background: naverUser ? 'var(--bg)' : '#fff', border: naverUser ? '1.5px solid #03C75A' : '1.5px solid var(--border)', padding: naverUser ? '22px 14px 8px' : '10px 14px' }} />
-            {naverUser && <span style={{ position: 'absolute', top: 7, left: 14, fontSize: 11, fontWeight: 700, color: '#03C75A' }}>✓ 네이버 로그인</span>}
+            {naverUser && <span style={{ position: 'absolute', top: 7, left: 14, fontSize: 11, fontWeight: 700, color: naverUser.type === 'guest' ? '#6B7280' : '#03C75A' }}>✓ {naverUser.type === 'guest' ? '게스트' : '네이버 로그인'}</span>}
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <textarea value={commentForm.content} onChange={e => setCommentForm({ ...commentForm, content: e.target.value })}

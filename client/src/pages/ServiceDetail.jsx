@@ -163,7 +163,7 @@ export default function ServiceDetail() {
                       placeholder="닉네임" maxLength={20} readOnly={!!naverUser}
                       style={{ width: '100%', boxSizing: 'border-box', border: naverUser ? '1.5px solid #03C75A' : '1.5px solid var(--border)', borderRadius: 10, padding: naverUser ? '22px 14px 8px' : '10px 14px', fontSize: 14, background: naverUser ? 'var(--bg)' : '#fff', color: 'var(--text)', outline: 'none', fontFamily: 'inherit' }}
                     />
-                    {naverUser && <span style={{ position: 'absolute', top: 7, left: 14, fontSize: 11, fontWeight: 700, color: '#03C75A' }}>✓ 네이버 로그인</span>}
+                    {naverUser && <span style={{ position: 'absolute', top: 7, left: 14, fontSize: 11, fontWeight: 700, color: localStorage.getItem('login_type') === 'guest' ? '#6B7280' : '#03C75A' }}>✓ {localStorage.getItem('login_type') === 'guest' ? '게스트' : '네이버 로그인'}</span>}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ fontSize: 13, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>별점:</span>

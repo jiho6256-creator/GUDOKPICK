@@ -23,8 +23,9 @@ export default function Sidebar() {
   const [naverUser, setNaverUser] = useState(() => {
     const n = localStorage.getItem('naver_nickname');
     const i = localStorage.getItem('naver_id');
-    return n && i ? { nickname: n, id: i } : null;
+    return n && i ? { nickname: n, id: i, type: localStorage.getItem('login_type') || 'naver' } : null;
   });
+  const [guestInput, setGuestInput] = useState('');
   const modalRef = useRef(null);
 
   useEffect(() => {
@@ -50,7 +51,20 @@ export default function Sidebar() {
   const logout = () => {
     localStorage.removeItem('naver_nickname');
     localStorage.removeItem('naver_id');
+    localStorage.removeItem('login_type');
     setNaverUser(null);
+    setShowLoginModal(false);
+  };
+
+  const guestLogin = () => {
+    const nick = guestInput.trim();
+    if (!nick) return;
+    const guestId = 'guest_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem('naver_nickname', nick);
+    localStorage.setItem('naver_id', guestId);
+    localStorage.setItem('login_type', 'guest');
+    setNaverUser({ nickname: nick, id: guestId, type: 'guest' });
+    setGuestInput('');
     setShowLoginModal(false);
   };
 
@@ -104,7 +118,9 @@ export default function Sidebar() {
           }}>
             {naverUser ? (
               <>
-                <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#03C75A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 800 }}>N</span>
+                <span style={{ width: 22, height: 22, borderRadius: '50%', background: naverUser.type === 'guest' ? '#6B7280' : '#03C75A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 800 }}>
+                  {naverUser.type === 'guest' ? 'G' : 'N'}
+                </span>
                 {naverUser.nickname}
               </>
             ) : '로그인'}
@@ -118,7 +134,7 @@ export default function Sidebar() {
             }}>
               {naverUser ? (
                 <div style={{ padding: '16px 20px' }}>
-                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4 }}>로그인됨</p>
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4 }}>{naverUser?.type === 'guest' ? '게스트' : '네이버 로그인'}</p>
                   <p style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>{naverUser.nickname}</p>
                   <button onClick={logout} style={{ width: '100%', padding: '10px', borderRadius: 10, background: '#f3f4f6', color: 'var(--text)', fontWeight: 700, fontSize: 14 }}>
                     로그아웃
@@ -140,7 +156,20 @@ export default function Sidebar() {
                     <span style={{ width: 24, height: 24, background: '#fff', borderRadius: 6, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>G</span>
                     구글로 로그인
                   </button>
-                  <p style={{ fontSize: 11, color: 'var(--text-tertiary)', textAlign: 'center', marginTop: 12 }}>카카오/구글은 준비 중입니다</p>
+                  <p style={{ fontSize: 11, color: 'var(--text-tertiary)', textAlign: 'center', marginTop: 12, marginBottom: 14 }}>카카오/구글은 준비 중입니다</p>
+                  <div style={{ borderTop: '1px solid var(--border)', paddingTop: 14 }}>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 10 }}>게스트로 시작하기</p>
+                    <input
+                      value={guestInput}
+                      onChange={e => setGuestInput(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && guestLogin()}
+                      placeholder="닉네임 입력" maxLength={20}
+                      style={{ width: '100%', boxSizing: 'border-box', border: '1.5px solid var(--border)', borderRadius: 10, padding: '9px 12px', fontSize: 14, outline: 'none', fontFamily: 'inherit', marginBottom: 8 }}
+                    />
+                    <button onClick={guestLogin} disabled={!guestInput.trim()} style={{ width: '100%', padding: '10px', borderRadius: 10, background: guestInput.trim() ? '#6B7280' : '#e5e7eb', color: '#fff', fontWeight: 700, fontSize: 14, cursor: guestInput.trim() ? 'pointer' : 'not-allowed' }}>
+                      게스트 로그인
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
