@@ -8,7 +8,7 @@ import StarRating, { StarDisplay } from '../components/StarRating';
 
 function PlatformBadge({ naverId }) {
   if (!naverId) return null;
-  if (naverId.startsWith('google_')) return <span style={{ fontSize: 10, fontWeight: 800, background: '#9CA3AF', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>G</span>;
+  if (naverId.startsWith('google_')) return <span style={{ fontSize: 10, fontWeight: 800, background: '#4B5563', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>G</span>;
   if (naverId.startsWith('guest_')) return null;
   return <span style={{ fontSize: 10, fontWeight: 800, background: '#03C75A', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>N</span>;
 }
@@ -181,9 +181,9 @@ export default function ServiceDetail() {
                   <div style={{ position: 'relative' }}>
                     <input value={reviewForm.nickname} onChange={e => setReviewForm({ ...reviewForm, nickname: e.target.value })}
                       placeholder="닉네임" maxLength={20} readOnly={!!naverUser}
-                      style={{ width: '100%', boxSizing: 'border-box', border: naverUser ? (localStorage.getItem('login_type') === 'naver' ? '1.5px solid #03C75A' : '1.5px solid #9CA3AF') : '1.5px solid var(--border)', borderRadius: 10, padding: naverUser ? '22px 14px 8px' : '10px 14px', fontSize: 14, background: naverUser ? 'var(--bg)' : '#fff', color: 'var(--text)', outline: 'none', fontFamily: 'inherit' }}
+                      style={{ width: '100%', boxSizing: 'border-box', border: naverUser ? (localStorage.getItem('login_type') === 'naver' ? '1.5px solid #03C75A' : '1.5px solid #4B5563') : '1.5px solid var(--border)', borderRadius: 10, padding: naverUser ? '22px 14px 8px' : '10px 14px', fontSize: 14, background: naverUser ? 'var(--bg)' : '#fff', color: 'var(--text)', outline: 'none', fontFamily: 'inherit' }}
                     />
-                    {naverUser && <span style={{ position: 'absolute', top: 7, left: 14, fontSize: 11, fontWeight: 700, color: localStorage.getItem('login_type') === 'naver' ? '#03C75A' : '#6B7280' }}>✓ {localStorage.getItem('login_type') === 'guest' ? '게스트' : localStorage.getItem('login_type') === 'google' ? '구글 로그인' : '네이버 로그인'}</span>}
+                    {naverUser && <span style={{ position: 'absolute', top: 7, left: 14, fontSize: 11, fontWeight: 700, color: localStorage.getItem('login_type') === 'naver' ? '#03C75A' : '#4B5563' }}>✓ {localStorage.getItem('login_type') === 'guest' ? '게스트' : localStorage.getItem('login_type') === 'google' ? '구글 로그인' : '네이버 로그인'}</span>}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                     <span style={{ fontSize: 13, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>별점:</span>
