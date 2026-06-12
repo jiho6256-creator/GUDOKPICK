@@ -11,6 +11,22 @@ const CATEGORIES = [
   { key: 'general', label: '자유' },
 ];
 
+function getNaverUser() {
+  const n = localStorage.getItem('naver_nickname');
+  const i = localStorage.getItem('naver_id');
+  return n && i ? { nickname: n, id: i } : null;
+}
+
+function NaverLoginButton() {
+  return (
+    <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/auth/naver`}
+      style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#03C75A', color: '#fff', borderRadius: 10, padding: '9px 16px', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>
+      <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="" style={{ height: 18, borderRadius: 3 }} />
+      네이버로 로그인
+    </a>
+  );
+}
+
 function getClientId() {
   let id = localStorage.getItem('gudok_client_id');
   if (!id) {
@@ -46,6 +62,24 @@ export default function Community() {
   const [form, setForm] = useState({ nickname: '', title: '', content: '', category: 'general', service_name: '' });
   const [submitting, setSubmitting] = useState(false);
   const [services, setServices] = useState([]);
+  const [naverUser, setNaverUser] = useState(getNaverUser);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const nn = params.get('naver_nickname');
+    const ni = params.get('naver_id');
+    if (nn && ni) {
+      localStorage.setItem('naver_nickname', nn);
+      localStorage.setItem('naver_id', ni);
+      setNaverUser({ nickname: nn, id: ni });
+      setForm(f => ({ ...f, nickname: nn }));
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (naverUser) setForm(f => ({ ...f, nickname: naverUser.nickname }));
+  }, [naverUser]);
 
   useEffect(() => {
     api.get('/api/services').then(r => setServices(r.data));
@@ -115,8 +149,20 @@ export default function Community() {
             </div>
           )}
           <div style={{ marginBottom: 10 }}>
+            {!naverUser ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                <NaverLoginButton />
+                <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>또는 닉네임 직접 입력</span>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#03C75A' }}>✓ {naverUser.nickname} (네이버)</span>
+                <button onClick={() => { localStorage.removeItem('naver_nickname'); localStorage.removeItem('naver_id'); setNaverUser(null); setForm(f => ({ ...f, nickname: '' })); }}
+                  style={{ fontSize: 12, color: 'var(--text-secondary)', padding: '3px 8px', borderRadius: 6, border: '1px solid var(--border)', background: '#fff' }}>로그아웃</button>
+              </div>
+            )}
             <input value={form.nickname} onChange={e => setForm({ ...form, nickname: e.target.value })}
-              placeholder="닉네임" maxLength={20} style={{ ...inputStyle, width: '100%', boxSizing: 'border-box' }} />
+              placeholder="닉네임" maxLength={20} readOnly={!!naverUser} style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', background: naverUser ? 'var(--bg)' : '#fff' }} />
           </div>
           <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })}
             placeholder="제목" maxLength={100}
@@ -199,6 +245,24 @@ export function PostDetail() {
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [liking, setLiking] = useState(false);
+  const [naverUser, setNaverUser] = useState(getNaverUser);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const nn = params.get('naver_nickname');
+    const ni = params.get('naver_id');
+    if (nn && ni) {
+      localStorage.setItem('naver_nickname', nn);
+      localStorage.setItem('naver_id', ni);
+      setNaverUser({ nickname: nn, id: ni });
+      setCommentForm(f => ({ ...f, nickname: nn }));
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (naverUser) setCommentForm(f => ({ ...f, nickname: naverUser.nickname }));
+  }, [naverUser]);
 
   const load = () => {
     setLoading(true);
@@ -301,9 +365,21 @@ export function PostDetail() {
 
         {/* 댓글 작성 */}
         <div style={{ background: 'var(--bg)', borderRadius: 12, padding: 16, marginTop: 8 }}>
-          <div style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
+          <div style={{ marginBottom: 10 }}>
+            {!naverUser ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                <NaverLoginButton />
+                <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>또는 닉네임 직접 입력</span>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#03C75A' }}>✓ {naverUser.nickname} (네이버)</span>
+                <button onClick={() => { localStorage.removeItem('naver_nickname'); localStorage.removeItem('naver_id'); setNaverUser(null); setCommentForm(f => ({ ...f, nickname: '' })); }}
+                  style={{ fontSize: 12, color: 'var(--text-secondary)', padding: '3px 8px', borderRadius: 6, border: '1px solid var(--border)', background: '#fff' }}>로그아웃</button>
+              </div>
+            )}
             <input value={commentForm.nickname} onChange={e => setCommentForm({ ...commentForm, nickname: e.target.value })}
-              placeholder="닉네임" maxLength={20} style={{ ...inputStyle, flex: '0 0 160px' }} />
+              placeholder="닉네임" maxLength={20} readOnly={!!naverUser} style={{ ...inputStyle, flex: '0 0 160px', background: naverUser ? 'var(--bg)' : '#fff' }} />
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
             <textarea value={commentForm.content} onChange={e => setCommentForm({ ...commentForm, content: e.target.value })}
