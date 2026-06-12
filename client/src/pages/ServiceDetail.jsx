@@ -41,11 +41,12 @@ export default function ServiceDetail() {
     try {
       const naverId = localStorage.getItem('naver_id');
       await postReview(id, { ...reviewForm, naver_id: naverId || undefined });
-      setReviewForm({ nickname: '', rating: 0, comment: '' });
+      setReviewForm({ nickname: naverUser?.nickname || '', rating: 0, comment: '' });
       setShowReviewForm(false);
       load();
     } catch (e) {
       if (e.response?.status === 409) alert('이미 이 서비스에 리뷰를 작성하셨습니다.');
+      else alert('등록 중 오류가 발생했습니다: ' + (e.response?.data?.error || e.message));
     } finally {
       setSubmitting(false);
     }
