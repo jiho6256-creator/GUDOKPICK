@@ -5,3 +5,5 @@ client/dist/
 server/gudokpick.db
 .env
 .env.local
+
+.vercel

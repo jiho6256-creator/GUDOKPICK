@@ -93,7 +93,7 @@ export default function ServiceDetail() {
       </button>
 
       {/* Hero card */}
-      <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 20, padding: '32px 36px', marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 20, padding: '20px 28px', marginBottom: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
           <ServiceLogo logo={service.logo} color={service.color} name={service.name} size={72} />
           <div>
