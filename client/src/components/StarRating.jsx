@@ -74,7 +74,7 @@ export default function StarRating({ value, onChange, size = 24 }) {
           if (!isNaN(n) && n > 0) onChange?.(Math.min(5, Math.max(0.1, Math.round(n * 10) / 10)));
         }}
         onFocus={() => { isFocused.current = true; }}
-        onBlur={() => { isFocused.current = false; setInputVal(value > 0 ? String(value) : ''); }}
+        onBlur={() => { isFocused.current = false; const n = parseFloat(inputVal); setInputVal(n > 0 ? String(n) : ''); }}
         style={{ width: 48, border: '1.5px solid #FFB800', borderRadius: 6, padding: 0, fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', fontFamily: 'inherit', color: '#FFB800', height: 28 }}
         placeholder="0.0"
       />
