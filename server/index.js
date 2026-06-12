@@ -191,21 +191,21 @@ app.get('/api/posts/:id', (req, res) => {
 
 // POST create post
 app.post('/api/posts', (req, res) => {
-  const { nickname, title, content, category } = req.body;
+  const { nickname, title, content, category, naver_id } = req.body;
   if (!nickname || !title || !content) return res.status(400).json({ error: 'nickname, title, content required' });
   const result = db.prepare(
-    'INSERT INTO posts (nickname, title, content, category) VALUES (?, ?, ?, ?)'
-  ).run(nickname.slice(0, 20), title.slice(0, 100), content.slice(0, 2000), category || 'general');
+    'INSERT INTO posts (nickname, naver_id, title, content, category) VALUES (?, ?, ?, ?, ?)'
+  ).run(nickname.slice(0, 20), naver_id || null, title.slice(0, 100), content.slice(0, 2000), category || 'general');
   res.json({ id: result.lastInsertRowid });
 });
 
 // POST comment
 app.post('/api/posts/:id/comments', (req, res) => {
-  const { nickname, content } = req.body;
+  const { nickname, content, naver_id } = req.body;
   if (!nickname || !content) return res.status(400).json({ error: 'nickname, content required' });
   const result = db.prepare(
-    'INSERT INTO post_comments (post_id, nickname, content) VALUES (?, ?, ?)'
-  ).run(req.params.id, nickname.slice(0, 20), content.slice(0, 500));
+    'INSERT INTO post_comments (post_id, nickname, naver_id, content) VALUES (?, ?, ?, ?)'
+  ).run(req.params.id, nickname.slice(0, 20), naver_id || null, content.slice(0, 500));
   res.json({ id: result.lastInsertRowid });
 });
 

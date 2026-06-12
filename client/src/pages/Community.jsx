@@ -76,7 +76,7 @@ export default function Community() {
     if (!form.nickname || !form.title || !form.content) return;
     setSubmitting(true);
     try {
-      const res = await api.post('/api/posts', form);
+      const res = await api.post('/api/posts', { ...form, naver_id: naverUser?.id || null });
       setShowForm(false);
       setForm({ nickname: '', title: '', content: '', category: 'general' });
       navigate(`/community/${res.data.id}`);
@@ -186,7 +186,7 @@ export default function Community() {
                 <span style={{ fontWeight: 700, fontSize: 15, flex: 1 }}>{p.title}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 12, color: 'var(--text-tertiary)' }}>
-                <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>{p.nickname}</span>
+                <span style={{ display: 'flex', alignItems: 'center', fontWeight: 600, color: 'var(--text-secondary)' }}>{p.nickname}<PlatformBadge naverId={p.naver_id} /></span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Clock size={11} />{timeAgo(p.created_at)}</span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Eye size={11} />{p.view_count}</span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><MessageCircle size={11} />{p.comment_count}</span>
@@ -234,7 +234,7 @@ export function PostDetail() {
     if (!commentForm.nickname || !commentForm.content) return;
     setSubmitting(true);
     try {
-      await api.post(`/api/posts/${id}/comments`, commentForm);
+      await api.post(`/api/posts/${id}/comments`, { ...commentForm, naver_id: naverUser?.id || null });
       setCommentForm({ nickname: '', content: '' });
       load();
     } finally {
@@ -275,7 +275,7 @@ export function PostDetail() {
         </div>
         <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 14, lineHeight: 1.4 }}>{post.title}</h1>
         <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--text-tertiary)', marginBottom: 24, paddingBottom: 18, borderBottom: '1px solid var(--border)' }}>
-          <span style={{ fontWeight: 700, color: 'var(--text-secondary)' }}>{post.nickname}</span>
+          <span style={{ display: 'flex', alignItems: 'center', fontWeight: 700, color: 'var(--text-secondary)' }}>{post.nickname}<PlatformBadge naverId={post.naver_id} /></span>
           <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Clock size={12} />{timeAgo(post.created_at)}</span>
           <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Eye size={12} />{post.view_count}</span>
         </div>
@@ -307,7 +307,7 @@ export function PostDetail() {
         {post.comments?.map(c => (
           <div key={c.id} style={{ borderBottom: '1px solid var(--border)', paddingBottom: 14, marginBottom: 14 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-              <span style={{ fontWeight: 700, fontSize: 14 }}>{c.nickname}</span>
+              <span style={{ display: 'flex', alignItems: 'center', fontWeight: 700, fontSize: 14 }}>{c.nickname}<PlatformBadge naverId={c.naver_id} /></span>
               <span style={{ fontSize: 12, color: 'var(--text-tertiary)' }}>{timeAgo(c.created_at)}</span>
             </div>
             <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>{c.content}</p>
@@ -339,6 +339,13 @@ export function PostDetail() {
       </div>
     </div>
   );
+}
+
+function PlatformBadge({ naverId }) {
+  if (!naverId) return null;
+  if (naverId.startsWith('google_')) return <span style={{ fontSize: 10, fontWeight: 800, background: '#4285F4', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>G</span>;
+  if (naverId.startsWith('guest_')) return <span style={{ fontSize: 10, fontWeight: 800, background: '#9CA3AF', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>게스트</span>;
+  return <span style={{ fontSize: 10, fontWeight: 800, background: '#03C75A', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>N</span>;
 }
 
 function categoryColor(cat) {

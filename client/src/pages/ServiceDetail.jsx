@@ -6,6 +6,13 @@ import axios from 'axios';
 import ServiceLogo from '../components/ServiceLogo';
 import StarRating, { StarDisplay } from '../components/StarRating';
 
+function PlatformBadge({ naverId }) {
+  if (!naverId) return null;
+  if (naverId.startsWith('google_')) return <span style={{ fontSize: 10, fontWeight: 800, background: '#4285F4', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>G</span>;
+  if (naverId.startsWith('guest_')) return <span style={{ fontSize: 10, fontWeight: 800, background: '#9CA3AF', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>게스트</span>;
+  return <span style={{ fontSize: 10, fontWeight: 800, background: '#03C75A', color: '#fff', borderRadius: 4, padding: '1px 5px', marginLeft: 5 }}>N</span>;
+}
+
 export default function ServiceDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -199,7 +206,10 @@ export default function ServiceDetail() {
               <div key={r.id} style={{ borderBottom: '1px solid var(--border)', paddingBottom: 14, marginBottom: 14, paddingLeft: 20 }}>
                 <>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                    <span style={{ fontWeight: 700, fontSize: 14 }}>{r.nickname}</span>
+                    <span style={{ display: 'flex', alignItems: 'center' }}>
+                      <span style={{ fontWeight: 700, fontSize: 14 }}>{r.nickname}</span>
+                      <PlatformBadge naverId={r.naver_id} />
+                    </span>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                       {editingReview === r.id
                         ? <StarRating value={editForm.rating} onChange={v => setEditForm({ ...editForm, rating: v })} size={18} />

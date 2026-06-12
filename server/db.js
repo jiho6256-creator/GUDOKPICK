@@ -47,6 +47,7 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS posts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nickname TEXT NOT NULL,
+    naver_id TEXT,
     title TEXT NOT NULL,
     content TEXT NOT NULL,
     category TEXT DEFAULT 'general',
@@ -58,6 +59,7 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     post_id INTEGER NOT NULL,
     nickname TEXT NOT NULL,
+    naver_id TEXT,
     content TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (post_id) REFERENCES posts(id)
