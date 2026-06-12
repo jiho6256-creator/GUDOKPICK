@@ -41,9 +41,14 @@ export default function StarRating({ value, onChange, size = 24 }) {
     };
   }, [onChange]);
 
+  const [inputVal, setInputVal] = useState('');
+  const [focused, setFocused] = useState(false);
+
   const handleInput = (e) => {
-    const n = parseFloat(e.target.value);
-    if (!isNaN(n)) onChange?.(Math.min(5, Math.max(0.1, Math.round(n * 10) / 10)));
+    const raw = e.target.value;
+    setInputVal(raw);
+    const n = parseFloat(raw);
+    if (!isNaN(n) && n > 0) onChange?.(Math.min(5, Math.max(0.1, Math.round(n * 10) / 10)));
   };
 
   const fillWidth = (n) => {
@@ -74,9 +79,11 @@ export default function StarRating({ value, onChange, size = 24 }) {
       </div>
       <input
         type="text" inputMode="decimal"
-        value={value > 0 ? value : ''}
+        value={focused ? inputVal : (value > 0 ? value : '')}
         onChange={handleInput}
-        style={{ width: 48, border: '1.5px solid #FFB800', borderRadius: 6, padding: '0', fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', fontFamily: 'inherit', color: '#FFB800', lineHeight: 1, height: 28, display: 'flex', alignItems: 'center' }}
+        onFocus={() => { setFocused(true); setInputVal(value > 0 ? String(value) : ''); }}
+        onBlur={() => setFocused(false)}
+        style={{ width: 48, border: '1.5px solid #FFB800', borderRadius: 6, padding: '0', fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', fontFamily: 'inherit', color: '#FFB800', lineHeight: 1, height: 28 }}
         placeholder="0.0"
       />
     </div>
