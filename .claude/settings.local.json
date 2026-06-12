@@ -24,7 +24,8 @@
       "Bash(git push *)",
       "Bash(curl -s https://gudokpick.onrender.com/api/services)",
       "Bash(python -c \"import sys,json; services=json.load\\(sys.stdin\\); [print\\(s['id'], s['name'], s.get\\('review_count',0\\)\\) for s in services]\")",
-      "Bash(powershell -Command \"Start-Sleep -Seconds 90; Invoke-RestMethod -Method DELETE -Uri 'https://gudokpick.onrender.com/api/admin/reviews/all' -Headers @{'x-admin-key'='1234'}\")"
+      "Bash(powershell -Command \"Start-Sleep -Seconds 90; Invoke-RestMethod -Method DELETE -Uri 'https://gudokpick.onrender.com/api/admin/reviews/all' -Headers @{'x-admin-key'='1234'}\")",
+      "mcp__Claude_in_Chrome__tabs_context_mcp"
     ]
   }
 }

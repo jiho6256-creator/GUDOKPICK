@@ -102,15 +102,14 @@ app.delete('/api/admin/reviews/all', adminAuth, (req, res) => {
   res.json({ ok: true });
 });
 
-const ADMIN_GUEST_ID = 'guest_adm_v8r3kx92mw';
-
 // DELETE review (nickname 확인)
 app.delete('/api/reviews/:id', (req, res) => {
-  const { nickname, naver_id } = req.body;
+  const { nickname } = req.body;
+  const isAdmin = req.headers['x-admin-key'] === (process.env.ADMIN_KEY || '1234');
   if (!nickname) return res.status(400).json({ error: 'nickname required' });
   const review = db.prepare('SELECT * FROM reviews WHERE id = ?').get(req.params.id);
   if (!review) return res.status(404).json({ error: 'Not found' });
-  if (naver_id !== ADMIN_GUEST_ID && review.nickname !== nickname) return res.status(403).json({ error: 'nickname mismatch' });
+  if (!isAdmin && review.nickname !== nickname) return res.status(403).json({ error: 'nickname mismatch' });
   db.prepare('DELETE FROM reviews WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });
