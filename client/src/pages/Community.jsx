@@ -114,7 +114,12 @@ export default function Community() {
 
       {showForm && (
         <div style={{ background: 'var(--primary-bg)', border: '1.5px solid var(--primary)', borderRadius: 14, padding: '22px 24px', marginBottom: 24 }}>
-          <h3 style={{ fontWeight: 700, marginBottom: 16, fontSize: 15 }}>새 게시글 작성</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
+            <h3 style={{ fontWeight: 700, fontSize: 15 }}>새 게시글 작성</h3>
+            <span style={{ fontSize: 12, fontWeight: 700, background: 'var(--primary)', color: '#fff', borderRadius: 20, padding: '3px 12px' }}>
+              {form.category === 'deal' ? '진행 중인 프로모션' : '자유'}
+            </span>
+          </div>
           {form.category === 'deal' && (
             <div style={{ marginBottom: 10 }}>
               <select value={form.service_name} onChange={e => setForm({ ...form, service_name: e.target.value })}
