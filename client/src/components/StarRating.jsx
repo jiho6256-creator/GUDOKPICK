@@ -73,10 +73,10 @@ export default function StarRating({ value, onChange, size = 24 }) {
         ))}
       </div>
       <input
-        type="number" min="0.1" max="5" step="0.1"
+        type="text" inputMode="decimal"
         value={value > 0 ? value : ''}
         onChange={handleInput}
-        style={{ width: 48, border: '1.5px solid #FFB800', borderRadius: 6, padding: '2px 6px', fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', fontFamily: 'inherit', color: '#FFB800' }}
+        style={{ width: 48, border: '1.5px solid #FFB800', borderRadius: 6, padding: '0', fontSize: 13, fontWeight: 700, textAlign: 'center', outline: 'none', fontFamily: 'inherit', color: '#FFB800', lineHeight: 1, height: 28, display: 'flex', alignItems: 'center' }}
         placeholder="0.0"
       />
     </div>
