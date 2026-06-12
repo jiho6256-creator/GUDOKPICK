@@ -69,13 +69,17 @@ app.get('/api/services/:id', (req, res) => {
 
 // POST review
 app.post('/api/services/:id/reviews', (req, res) => {
-  const { nickname, rating, comment } = req.body;
+  const { nickname, rating, comment, naver_id } = req.body;
   if (!nickname || !rating) return res.status(400).json({ error: 'nickname and rating required' });
   if (rating < 0.5 || rating > 5) return res.status(400).json({ error: 'rating must be 0.5-5' });
+  if (naver_id) {
+    const existing = db.prepare('SELECT id FROM reviews WHERE service_id = ? AND naver_id = ?').get(req.params.id, naver_id);
+    if (existing) return res.status(409).json({ error: 'already reviewed' });
+  }
 
   const result = db.prepare(
-    'INSERT INTO reviews (service_id, nickname, rating, comment) VALUES (?, ?, ?, ?)'
-  ).run(req.params.id, nickname.slice(0, 20), Number(rating), (comment || '').slice(0, 300));
+    'INSERT INTO reviews (service_id, nickname, naver_id, rating, comment) VALUES (?, ?, ?, ?, ?)'
+  ).run(req.params.id, nickname.slice(0, 20), naver_id || null, Number(rating), (comment || '').slice(0, 300));
 
   res.json({ id: result.lastInsertRowid });
 });

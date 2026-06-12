@@ -33,14 +33,19 @@ export default function ServiceDetail() {
 
   useEffect(() => { load(); }, [id]);
 
+  const alreadyReviewed = naverUser && service?.reviews?.some(r => r.naver_id === naverUser.id);
+
   const submitReview = async () => {
     if (!reviewForm.nickname || !reviewForm.rating) return;
     setSubmitting(true);
     try {
-      await postReview(id, reviewForm);
+      const naverId = localStorage.getItem('naver_id');
+      await postReview(id, { ...reviewForm, naver_id: naverId || undefined });
       setReviewForm({ nickname: '', rating: 0, comment: '' });
       setShowReviewForm(false);
       load();
+    } catch (e) {
+      if (e.response?.status === 409) alert('이미 이 서비스에 리뷰를 작성하셨습니다.');
     } finally {
       setSubmitting(false);
     }
@@ -127,12 +132,16 @@ export default function ServiceDetail() {
               <h3 style={{ fontSize: 16, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
                 <MessageCircle size={18} color="var(--primary)" /> 유저 리뷰 ({service.review_count})
               </h3>
-              <button onClick={() => setShowReviewForm(!showReviewForm)} style={{
-                fontSize: 13, fontWeight: 600, color: 'var(--primary)',
-                background: 'var(--primary-bg)', padding: '7px 14px', borderRadius: 20, border: '1px solid var(--primary)',
-              }}>
-                {showReviewForm ? '취소' : '+ 리뷰 작성'}
-              </button>
+              {alreadyReviewed ? (
+                <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>이미 리뷰를 작성하셨습니다</span>
+              ) : (
+                <button onClick={() => setShowReviewForm(!showReviewForm)} style={{
+                  fontSize: 13, fontWeight: 600, color: 'var(--primary)',
+                  background: 'var(--primary-bg)', padding: '7px 14px', borderRadius: 20, border: '1px solid var(--primary)',
+                }}>
+                  {showReviewForm ? '취소' : '+ 리뷰 작성'}
+                </button>
+              )}
             </div>
 
             {service.review_count > 0 && (
