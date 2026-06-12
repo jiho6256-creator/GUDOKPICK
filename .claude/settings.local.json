@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(node index.js)",
+      "Bash(Start-Sleep -Seconds 3)",
+      "Bash(Invoke-RestMethod -Uri \"http://localhost:4000/api/services?category=ott\")",
+      "Bash(ConvertTo-Json -Depth 3)",
+      "Bash(Select-String \"name\")",
+      "Bash(Select-Object -First 5)",
+      "PowerShell(Start-Process -NoNewWindow -FilePath \"node\" -ArgumentList \"index.js\" -WorkingDirectory \"C:\\\\Users\\\\jiho6\\\\OneDrive\\\\Desktop\\\\������\\\\server\")",
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:4000/api/services?category=ott\")",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\jiho6\\\\OneDrive\\\\Desktop\\\\구독픽\\\\server\\\\gudokpick.db\" -ErrorAction SilentlyContinue)",
+      "Bash(Write-Output \"done\")",
+      "PowerShell(Get-Process -Name node -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep 1; Start-Process -FilePath \"cmd\" -ArgumentList \"/k node index.js\" -WorkingDirectory \"C:\\\\Users\\\\jiho6\\\\OneDrive\\\\Desktop\\\\구독픽\\\\server\" -WindowStyle Normal; Start-Process -FilePath \"cmd\" -ArgumentList \"/k npm run dev\" -WorkingDirectory \"C:\\\\Users\\\\jiho6\\\\OneDrive\\\\Desktop\\\\구독픽\\\\client\" -WindowStyle Normal; Start-Sleep 3; $s = Test-Connection localhost -TcpPort 4000 -ErrorAction SilentlyContinue; $c = Test-Connection localhost -TcpPort 5173 -ErrorAction SilentlyContinue; Write-Output \"서버\\(4000\\): $s / 클라이언트\\(5173\\): $c\")",
+      "PowerShell(Invoke-RestMethod -Uri \"http://localhost:4000/api/admin/services\" -Headers @{\"x-admin-key\"=\"1234\"} | Where-Object { $_.name -ne \"네이버플러스\" } | ForEach-Object { Invoke-RestMethod -Uri \"http://localhost:4000/api/admin/services/$\\($_.id\\)\" -Method Delete -Headers @{\"x-admin-key\"=\"1234\"} }; Write-Output \"done\")",
+      "PowerShell(\\(Get-Command node\\).Source; \\(Get-Command npm\\).Source)",
+      "Bash(Write-Host \"DB deleted\")"
+    ]
+  }
+}
