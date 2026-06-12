@@ -73,7 +73,10 @@ export default function StarRating({ value, onChange, size = 24 }) {
           const n = parseFloat(raw);
           if (!isNaN(n) && n > 5) { setInputVal('5'); onChange?.(5); return; }
           setInputVal(raw);
-          if (!isNaN(n) && n > 0) onChange?.(Math.min(5, Math.max(0.1, Math.round(n * 10) / 10)));
+          if (!isNaN(n) && n > 0) {
+            if (n < 0.5) { setInputVal('0.5'); onChange?.(0.5); return; }
+            onChange?.(Math.min(5, Math.max(0.5, Math.round(n * 10) / 10)));
+          }
         }}
         onFocus={() => { isFocused.current = true; }}
         onBlur={() => { isFocused.current = false; const n = parseFloat(inputVal); setInputVal(n > 0 ? String(n) : ''); }}
