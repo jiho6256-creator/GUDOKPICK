@@ -1,9 +1,8 @@
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Star } from 'lucide-react';
 
-function getValueFromEvent(e, containerRef) {
-  const rect = containerRef.current.getBoundingClientRect();
-  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+function getValueFromRect(clientX, rect) {
+  const x = clientX - rect.left;
   const starWidth = rect.width / 5;
   const raw = x / starWidth;
   const star = Math.ceil(raw);
@@ -15,27 +14,64 @@ function getValueFromEvent(e, containerRef) {
 export default function StarRating({ value, onChange, size = 24 }) {
   const containerRef = useRef(null);
   const dragging = useRef(false);
+  const [hover, setHover] = useState(null);
 
-  const handle = (e) => {
-    const v = getValueFromEvent(e, containerRef);
-    onChange?.(Math.max(0.5, v));
-  };
+  useEffect(() => {
+    const onMove = (e) => {
+      if (!dragging.current) return;
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const rect = containerRef.current.getBoundingClientRect();
+      const v = Math.min(5, Math.max(0.5, getValueFromRect(clientX, rect)));
+      onChange?.(v);
+      setHover(v);
+    };
+    const onUp = () => {
+      dragging.current = false;
+      setHover(null);
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('touchmove', onMove);
+    document.addEventListener('touchend', onUp);
+    return () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onUp);
+    };
+  }, [onChange]);
+
+  const display = hover ?? value;
 
   return (
     <div
       ref={containerRef}
       style={{ display: 'flex', gap: 4, cursor: 'pointer', userSelect: 'none' }}
-      onMouseDown={e => { dragging.current = true; handle(e); }}
-      onMouseMove={e => { if (dragging.current) handle(e); }}
-      onMouseUp={() => { dragging.current = false; }}
-      onMouseLeave={() => { dragging.current = false; }}
-      onTouchStart={e => { dragging.current = true; handle(e); }}
-      onTouchMove={e => { if (dragging.current) handle(e); }}
-      onTouchEnd={() => { dragging.current = false; }}
+      onMouseDown={e => {
+        dragging.current = true;
+        const rect = containerRef.current.getBoundingClientRect();
+        const v = Math.min(5, Math.max(0.5, getValueFromRect(e.clientX, rect)));
+        onChange?.(v);
+        setHover(v);
+      }}
+      onMouseMove={e => {
+        if (!dragging.current) {
+          const rect = containerRef.current.getBoundingClientRect();
+          setHover(Math.min(5, Math.max(0.5, getValueFromRect(e.clientX, rect))));
+        }
+      }}
+      onMouseLeave={() => { if (!dragging.current) setHover(null); }}
+      onTouchStart={e => {
+        dragging.current = true;
+        const rect = containerRef.current.getBoundingClientRect();
+        const v = Math.min(5, Math.max(0.5, getValueFromRect(e.touches[0].clientX, rect)));
+        onChange?.(v);
+        setHover(v);
+      }}
     >
       {[1, 2, 3, 4, 5].map(n => {
-        const full = value >= n;
-        const half = !full && value >= n - 0.5;
+        const full = display >= n;
+        const half = !full && display >= n - 0.5;
         return (
           <span key={n} style={{ position: 'relative', display: 'inline-block', flexShrink: 0 }}>
             <Star size={size} fill="transparent" color="#DDD" strokeWidth={1.5} />
