@@ -1,5 +1,5 @@
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Users } from 'lucide-react';
 
 const NAV = [
   { path: '/ranking', emoji: '🏆', emojiY: '-1px', emojiMR: -6, label: '구독서비스 랭킹' },
@@ -19,6 +19,40 @@ const CATEGORIES = [
 export default function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [naverUser, setNaverUser] = useState(() => {
+    const n = localStorage.getItem('naver_nickname');
+    const i = localStorage.getItem('naver_id');
+    return n && i ? { nickname: n, id: i } : null;
+  });
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const nn = params.get('naver_nickname');
+    const ni = params.get('naver_id');
+    if (nn && ni) {
+      localStorage.setItem('naver_nickname', nn);
+      localStorage.setItem('naver_id', ni);
+      setNaverUser({ nickname: nn, id: ni });
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (modalRef.current && !modalRef.current.contains(e.target)) setShowLoginModal(false);
+    };
+    if (showLoginModal) document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [showLoginModal]);
+
+  const logout = () => {
+    localStorage.removeItem('naver_nickname');
+    localStorage.removeItem('naver_id');
+    setNaverUser(null);
+    setShowLoginModal(false);
+  };
 
   return (
     <header style={{
@@ -56,6 +90,62 @@ export default function Sidebar() {
             );
           })}
         </nav>
+
+        {/* 로그인 버튼 */}
+        <div style={{ marginLeft: 'auto', position: 'relative' }} ref={modalRef}>
+          <button onClick={() => setShowLoginModal(v => !v)} style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '7px 16px', borderRadius: 20,
+            background: naverUser ? 'var(--primary-bg)' : 'var(--primary)',
+            color: naverUser ? 'var(--primary)' : '#fff',
+            fontWeight: 700, fontSize: 14,
+            border: naverUser ? '1.5px solid var(--primary)' : 'none',
+            transition: 'all 0.15s',
+          }}>
+            {naverUser ? (
+              <>
+                <span style={{ width: 22, height: 22, borderRadius: '50%', background: '#03C75A', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 12, fontWeight: 800 }}>N</span>
+                {naverUser.nickname}
+              </>
+            ) : '로그인'}
+          </button>
+
+          {showLoginModal && (
+            <div style={{
+              position: 'absolute', top: 'calc(100% + 10px)', right: 0,
+              background: '#fff', borderRadius: 16, boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
+              border: '1px solid var(--border)', width: 240, zIndex: 200, overflow: 'hidden',
+            }}>
+              {naverUser ? (
+                <div style={{ padding: '16px 20px' }}>
+                  <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 4 }}>로그인됨</p>
+                  <p style={{ fontSize: 15, fontWeight: 700, marginBottom: 16 }}>{naverUser.nickname}</p>
+                  <button onClick={logout} style={{ width: '100%', padding: '10px', borderRadius: 10, background: '#f3f4f6', color: 'var(--text)', fontWeight: 700, fontSize: 14 }}>
+                    로그아웃
+                  </button>
+                </div>
+              ) : (
+                <div style={{ padding: '16px 20px' }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 14 }}>소셜 로그인</p>
+                  <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/auth/naver`}
+                    style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 14px', borderRadius: 10, background: '#03C75A', color: '#fff', fontWeight: 700, fontSize: 14, textDecoration: 'none', marginBottom: 8 }}>
+                    <span style={{ width: 24, height: 24, background: '#fff', borderRadius: 6, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#03C75A', fontWeight: 900, fontSize: 14 }}>N</span>
+                    네이버로 로그인
+                  </a>
+                  <button disabled style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 14px', borderRadius: 10, background: '#FEE500', color: '#3C1E1E', fontWeight: 700, fontSize: 14, width: '100%', marginBottom: 8, opacity: 0.5, cursor: 'not-allowed' }}>
+                    <span style={{ width: 24, height: 24, background: '#3C1E1E', borderRadius: 6, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 13 }}>💬</span>
+                    카카오로 로그인
+                  </button>
+                  <button disabled style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '11px 14px', borderRadius: 10, background: '#fff', color: '#3c4043', fontWeight: 700, fontSize: 14, width: '100%', border: '1.5px solid #dadce0', opacity: 0.5, cursor: 'not-allowed' }}>
+                    <span style={{ width: 24, height: 24, background: '#fff', borderRadius: 6, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>G</span>
+                    구글로 로그인
+                  </button>
+                  <p style={{ fontSize: 11, color: 'var(--text-tertiary)', textAlign: 'center', marginTop: 12 }}>카카오/구글은 준비 중입니다</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
 
       </div>
     </header>

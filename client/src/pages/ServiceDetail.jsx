@@ -16,28 +16,15 @@ export default function ServiceDetail() {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [editingReview, setEditingReview] = useState(null);
   const [editForm, setEditForm] = useState({ nickname: '', rating: 0, comment: '' });
-  const [naverUser, setNaverUser] = useState(() => {
+  const naverUser = (() => {
     const n = localStorage.getItem('naver_nickname');
     const i = localStorage.getItem('naver_id');
     return n && i ? { nickname: n, id: i } : null;
-  });
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const nn = params.get('naver_nickname');
-    const ni = params.get('naver_id');
-    if (nn && ni) {
-      localStorage.setItem('naver_nickname', nn);
-      localStorage.setItem('naver_id', ni);
-      setNaverUser({ nickname: nn, id: ni });
-      setReviewForm(f => ({ ...f, nickname: nn }));
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }, []);
+  })();
 
   useEffect(() => {
     if (naverUser) setReviewForm(f => ({ ...f, nickname: naverUser.nickname }));
-  }, [naverUser]);
+  }, []);
 
   const load = () => {
     setLoading(true);
@@ -160,22 +147,7 @@ export default function ServiceDetail() {
 
             {showReviewForm && (
               <div style={{ background: 'var(--bg)', borderRadius: 12, padding: 18, marginBottom: 18 }}>
-                {!naverUser ? (
-                  <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <a href={`${import.meta.env.VITE_API_URL || 'http://localhost:4000'}/auth/naver`}
-                      style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#03C75A', color: '#fff', borderRadius: 10, padding: '9px 16px', fontWeight: 700, fontSize: 14, textDecoration: 'none' }}>
-                      <img src="https://static.nid.naver.com/oauth/small_g_in.PNG" alt="" style={{ height: 18, borderRadius: 3 }} />
-                      네이버로 로그인
-                    </a>
-                    <span style={{ fontSize: 12, color: 'var(--text-secondary)' }}>또는 닉네임 직접 입력</span>
-                  </div>
-                ) : (
-                  <div style={{ marginBottom: 12, display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: '#03C75A' }}>✓ {naverUser.nickname} (네이버)</span>
-                    <button onClick={() => { localStorage.removeItem('naver_nickname'); localStorage.removeItem('naver_id'); setNaverUser(null); setReviewForm(f => ({ ...f, nickname: '' })); }}
-                      style={{ fontSize: 12, color: 'var(--text-secondary)', padding: '3px 8px', borderRadius: 6, border: '1px solid var(--border)', background: '#fff' }}>로그아웃</button>
-                  </div>
-                )}
+                {naverUser && <p style={{ fontSize: 12, fontWeight: 700, color: '#03C75A', marginBottom: 10 }}>✓ {naverUser.nickname} (네이버 로그인)</p>}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 10 }}>
                   <input value={reviewForm.nickname} onChange={e => setReviewForm({ ...reviewForm, nickname: e.target.value })}
                     placeholder="닉네임" maxLength={20} readOnly={!!naverUser}
