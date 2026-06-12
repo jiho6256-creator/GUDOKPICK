@@ -8,11 +8,11 @@ import Sparkline from '../components/Sparkline';
 
 const CATEGORIES = [
   { key: 'all', label: '전체' },
-  { key: 'ott', label: 'OTT' },
   { key: 'ai', label: 'AI' },
+  { key: 'ott', label: 'OTT' },
   { key: 'shopping', label: '쇼핑' },
-  { key: 'music', label: '음악' },
   { key: 'food', label: '배달' },
+  { key: 'music', label: '음악' },
   { key: 'game', label: '게임' },
 ];
 
