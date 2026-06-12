@@ -70,7 +70,7 @@ export default function StarRating({ value, onChange, size = 24 }) {
         onChange={e => {
           const raw = e.target.value;
           const n = parseFloat(raw);
-          if (!isNaN(n) && n > 5) return;
+          if (!isNaN(n) && n > 5) { setInputVal('5'); onChange?.(5); return; }
           setInputVal(raw);
           if (!isNaN(n) && n > 0) onChange?.(Math.min(5, Math.max(0.1, Math.round(n * 10) / 10)));
         }}
