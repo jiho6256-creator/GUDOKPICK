@@ -22,7 +22,7 @@ function getChosung(str) {
 function matchChosung(name, query) {
   if (!query) return true;
   const isChosung = [...query].every(ch => CHOSUNG.includes(ch));
-  if (isChosung) return getChosung(name).includes(query);
+  if (isChosung) return getChosung(name).startsWith(query);
   return name.includes(query);
 }
 
