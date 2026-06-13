@@ -373,7 +373,9 @@ export default function Community() {
                 {p.category === 'deal' && p.promo_end && !(new Date(p.promo_end) < new Date()) && (
                   <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>~{p.promo_end}</span>
                 )}
-                <span style={{ fontWeight: 700, fontSize: 15, flex: 1 }}>{p.title}</span>
+                <span style={{ fontWeight: 700, fontSize: 15, flex: 1 }}>
+                  {p.service_tag && <span style={{ color: 'var(--primary)', marginRight: 4 }}>[{p.service_tag}]</span>}{p.title}
+                </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 12, color: 'var(--text-tertiary)' }}>
                 <span style={{ display: 'flex', alignItems: 'center', fontWeight: 600, color: 'var(--text-secondary)' }}>{p.nickname}<PlatformBadge naverId={p.naver_id} /></span>
