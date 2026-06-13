@@ -66,10 +66,9 @@ function DateInput({ value, onChange, inputStyle, placeholder = 'YY.MM.DD' }) {
       <input
         value={text}
         onChange={handleChange}
-        onClick={() => dateRef.current?.showPicker?.()}
         placeholder={placeholder}
         maxLength={8}
-        style={{ ...inputStyle, flex: 1, border: 'none', outline: 'none', margin: 0, borderRadius: 0, background: 'transparent', cursor: 'pointer' }}
+        style={{ ...inputStyle, flex: 1, border: 'none', outline: 'none', margin: 0, borderRadius: 0, background: 'transparent' }}
       />
       <button type="button" onClick={() => dateRef.current?.showPicker?.()}
         style={{ padding: '0 10px', color: 'var(--text-secondary)', fontSize: 16, flexShrink: 0 }}>📅</button>
