@@ -253,7 +253,7 @@ export default function Community() {
                 <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid var(--border)', borderRadius: 10, background: '#fff', overflow: 'hidden' }}>
                   <span style={{ padding: '0 10px', fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', borderRight: '1px solid var(--border)', whiteSpace: 'nowrap' }}>할인률</span>
                   <input type="number" min="1" max="100" value={form.discount_rate} onChange={e => setForm({ ...form, discount_rate: e.target.value })}
-                    placeholder="30" style={{ ...inputStyle, flex: 1, border: 'none', outline: 'none', margin: 0, borderRadius: 0, background: 'transparent', width: 0 }} />
+                    placeholder="30" className="no-spinner" style={{ ...inputStyle, flex: 1, border: 'none', outline: 'none', margin: 0, borderRadius: 0, background: 'transparent', width: 0, textAlign: 'right', MozAppearance: 'textfield' }} />
                   <span style={{ padding: '0 10px', fontSize: 13, color: 'var(--text-secondary)' }}>%</span>
                 </div>
               </div>
@@ -467,7 +467,7 @@ export function PostDetail() {
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', border: '1.5px solid var(--border)', borderRadius: 10, background: '#fff', overflow: 'hidden' }}>
                   <span style={{ padding: '0 10px', fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', borderRight: '1px solid var(--border)', whiteSpace: 'nowrap' }}>할인률</span>
                   <input type="number" min="1" max="100" value={editForm.discount_rate} onChange={e => setEditForm({ ...editForm, discount_rate: e.target.value })}
-                    placeholder="30" style={{ flex: 1, border: 'none', outline: 'none', padding: '8px 8px', fontSize: 13, fontFamily: 'inherit', background: 'transparent', width: 0 }} />
+                    placeholder="30" className="no-spinner" style={{ flex: 1, border: 'none', outline: 'none', padding: '8px 8px', fontSize: 13, fontFamily: 'inherit', background: 'transparent', width: 0, textAlign: 'right', MozAppearance: 'textfield' }} />
                   <span style={{ padding: '0 10px', fontSize: 13, color: 'var(--text-secondary)' }}>%</span>
                 </div>
                 <DateInput value={editForm.promo_start} onChange={v => setEditForm({ ...editForm, promo_start: v })} inputStyle={{ padding: '8px 12px', fontSize: 13, fontFamily: 'inherit' }} />
