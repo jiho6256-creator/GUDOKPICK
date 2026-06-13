@@ -11,6 +11,21 @@ const CATEGORIES = [
   { key: 'general', label: '자유' },
 ];
 
+const CHOSUNG = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+function getChosung(str) {
+  return [...str].map(ch => {
+    const code = ch.charCodeAt(0) - 0xAC00;
+    if (code < 0 || code > 11171) return ch;
+    return CHOSUNG[Math.floor(code / 588)];
+  }).join('');
+}
+function matchChosung(name, query) {
+  if (!query) return true;
+  const isChosung = [...query].every(ch => CHOSUNG.includes(ch));
+  if (isChosung) return getChosung(name).includes(query);
+  return name.includes(query);
+}
+
 function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -23,7 +38,7 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
   }, []);
 
   const sorted = [...services].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
-  const filtered = sorted.filter(s => s.name.includes(query));
+  const filtered = sorted.filter(s => matchChosung(s.name, query));
 
   const select = (name) => { onChange(name); setQuery(''); setOpen(false); };
   const clear = () => { onChange(''); setQuery(''); };
