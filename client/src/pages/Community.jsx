@@ -27,6 +27,57 @@ function matchChosung(name, query) {
   return name.toLowerCase().includes(query.toLowerCase());
 }
 
+function DateInput({ value, onChange, inputStyle, placeholder = 'YY.MM.DD' }) {
+  const [text, setText] = useState('');
+  const dateRef = useRef(null);
+
+  useEffect(() => {
+    if (value) {
+      const [y, m, d] = value.split('-');
+      setText(`${y.slice(2)}.${m}.${d}`);
+    } else {
+      setText('');
+    }
+  }, [value]);
+
+  const handleChange = (e) => {
+    let v = e.target.value.replace(/[^0-9.]/g, '');
+    // auto-insert dots
+    v = v.replace(/^(\d{2})(\d)/, '$1.$2').replace(/^(\d{2}\.\d{2})(\d)/, '$1.$2');
+    if (v.length > 8) v = v.slice(0, 8);
+    setText(v);
+
+    const parts = v.split('.');
+    if (parts.length === 3 && parts[0].length === 2 && parts[1].length === 2 && parts[2].length === 2) {
+      const year = parseInt(parts[0]) >= 0 ? `20${parts[0]}` : parts[0];
+      const iso = `${year}-${parts[1]}-${parts[2]}`;
+      if (!isNaN(new Date(iso).getTime())) onChange(iso);
+    } else if (v === '') {
+      onChange('');
+    }
+  };
+
+  const handleDatePick = (e) => {
+    onChange(e.target.value);
+  };
+
+  return (
+    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', border: '1.5px solid var(--border)', borderRadius: 10, background: '#fff', overflow: 'hidden' }}>
+      <input
+        value={text}
+        onChange={handleChange}
+        placeholder={placeholder}
+        maxLength={8}
+        style={{ ...inputStyle, flex: 1, border: 'none', outline: 'none', margin: 0, borderRadius: 0, background: 'transparent' }}
+      />
+      <button type="button" onClick={() => dateRef.current?.showPicker?.()}
+        style={{ padding: '0 10px', color: 'var(--text-secondary)', fontSize: 16, flexShrink: 0 }}>📅</button>
+      <input ref={dateRef} type="date" value={value} onChange={handleDatePick}
+        style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: 0, height: 0 }} />
+    </div>
+  );
+}
+
 function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -204,17 +255,11 @@ export default function Community() {
               </div>
               <div style={{ flex: 1 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>시작일</label>
-                <input type="date" value={form.promo_start} onChange={e => setForm({ ...form, promo_start: e.target.value })}
-                  onClick={e => e.target.showPicker?.()}
-                  className={!form.promo_start ? 'date-empty' : ''}
-                  style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', cursor: 'pointer' }} />
+                <DateInput value={form.promo_start} onChange={v => setForm({ ...form, promo_start: v })} inputStyle={inputStyle} />
               </div>
               <div style={{ flex: 1 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>종료일</label>
-                <input type="date" value={form.promo_end} onChange={e => setForm({ ...form, promo_end: e.target.value })}
-                  onClick={e => e.target.showPicker?.()}
-                  className={!form.promo_end ? 'date-empty' : ''}
-                  style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', cursor: 'pointer' }} />
+                <DateInput value={form.promo_end} onChange={v => setForm({ ...form, promo_end: v })} inputStyle={inputStyle} />
               </div>
             </div>
             </>
