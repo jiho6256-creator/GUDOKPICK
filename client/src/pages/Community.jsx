@@ -407,6 +407,11 @@ export function PostDetail() {
   const [naverUser, setNaverUser] = useState(getNaverUser);
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState({ title: '', content: '', discount_rate: '', promo_start: '', promo_end: '', service_tag: '' });
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    api.get('/api/services').then(r => setServices(r.data)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (naverUser) setCommentForm(f => ({ ...f, nickname: naverUser.nickname }));
@@ -516,6 +521,13 @@ export function PostDetail() {
             <input value={editForm.title} onChange={e => setEditForm({ ...editForm, title: e.target.value })}
               style={{ width: '100%', boxSizing: 'border-box', border: '1.5px solid var(--border)', borderRadius: 10, padding: '10px 14px', fontSize: 16, fontWeight: 700, marginBottom: 10, fontFamily: 'inherit' }} />
             {post.category === 'deal' && (
+              <>
+              <ServiceSearchSelect
+                services={services}
+                value={editForm.service_tag}
+                onChange={v => setEditForm({ ...editForm, service_tag: v })}
+                inputStyle={{ padding: '10px 14px', fontSize: 13, fontFamily: 'inherit' }}
+              />
               <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', border: '1.5px solid var(--border)', borderRadius: 10, background: '#fff', overflow: 'hidden' }}>
                   <span style={{ padding: '0 10px', fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', borderRight: '1px solid var(--border)', whiteSpace: 'nowrap' }}>할인률</span>
@@ -526,6 +538,7 @@ export function PostDetail() {
                 <DateInput value={editForm.promo_start} onChange={v => setEditForm({ ...editForm, promo_start: v })} inputStyle={{ padding: '8px 12px', fontSize: 13, fontFamily: 'inherit' }} />
                 <DateInput value={editForm.promo_end} onChange={v => setEditForm({ ...editForm, promo_end: v })} inputStyle={{ padding: '8px 12px', fontSize: 13, fontFamily: 'inherit' }} />
               </div>
+              </>
             )}
             <textarea value={editForm.content} onChange={e => setEditForm({ ...editForm, content: e.target.value })}
               rows={6} style={{ width: '100%', boxSizing: 'border-box', border: '1.5px solid var(--border)', borderRadius: 10, padding: '10px 14px', fontSize: 15, resize: 'vertical', marginBottom: 12, fontFamily: 'inherit' }} />
