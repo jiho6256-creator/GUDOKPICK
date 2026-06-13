@@ -206,13 +206,15 @@ export default function Community() {
                 <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>시작일</label>
                 <input type="date" value={form.promo_start} onChange={e => setForm({ ...form, promo_start: e.target.value })}
                   onClick={e => e.target.showPicker?.()}
-                  style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', cursor: 'pointer', color: form.promo_start ? 'var(--text)' : 'transparent' }} />
+                  className={!form.promo_start ? 'date-empty' : ''}
+                  style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', cursor: 'pointer' }} />
               </div>
               <div style={{ flex: 1 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>종료일</label>
                 <input type="date" value={form.promo_end} onChange={e => setForm({ ...form, promo_end: e.target.value })}
                   onClick={e => e.target.showPicker?.()}
-                  style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', cursor: 'pointer', color: form.promo_end ? 'var(--text)' : 'transparent' }} />
+                  className={!form.promo_end ? 'date-empty' : ''}
+                  style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', cursor: 'pointer' }} />
               </div>
             </div>
             </>

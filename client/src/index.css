@@ -84,3 +84,9 @@ p { margin: 0; }
   .score-grid { grid-template-columns: 1fr !important; }
   .review-form-grid { grid-template-columns: 1fr !important; }
 }
+
+input[type='date'].date-empty::-webkit-datetime-edit,
+input[type='date'].date-empty::-webkit-datetime-edit-year-field,
+input[type='date'].date-empty::-webkit-datetime-edit-month-field,
+input[type='date'].date-empty::-webkit-datetime-edit-day-field,
+input[type='date'].date-empty::-webkit-datetime-edit-text { color: transparent; }
