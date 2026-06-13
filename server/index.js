@@ -205,11 +205,11 @@ app.get('/api/posts/by-service/:name', (req, res) => {
 
 // POST create post
 app.post('/api/posts', (req, res) => {
-  const { nickname, title, content, category, service_tag, naver_id } = req.body;
+  const { nickname, title, content, category, service_tag, discount_rate, promo_start, promo_end, naver_id } = req.body;
   if (!nickname || !title || !content) return res.status(400).json({ error: 'nickname, title, content required' });
   const result = db.prepare(
-    'INSERT INTO posts (nickname, naver_id, title, content, category, service_tag) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(nickname.slice(0, 20), naver_id || null, title.slice(0, 100), content.slice(0, 2000), category || 'general', service_tag || null);
+    'INSERT INTO posts (nickname, naver_id, title, content, category, service_tag, discount_rate, promo_start, promo_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(nickname.slice(0, 20), naver_id || null, title.slice(0, 100), content.slice(0, 2000), category || 'general', service_tag || null, discount_rate || null, promo_start || null, promo_end || null);
   res.json({ id: result.lastInsertRowid });
 });
 

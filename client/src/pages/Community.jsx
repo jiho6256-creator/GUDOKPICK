@@ -50,7 +50,7 @@ export default function Community() {
   const [category, setCategory] = useState('deal');
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ nickname: '', title: '', content: '', category: 'general', service_name: '' });
+  const [form, setForm] = useState({ nickname: '', title: '', content: '', category: 'general', service_name: '', discount_rate: '', promo_start: '', promo_end: '' });
   const [submitting, setSubmitting] = useState(false);
   const [services, setServices] = useState([]);
   const [naverUser, setNaverUser] = useState(getNaverUser);
@@ -88,7 +88,7 @@ export default function Community() {
     try {
       const res = await api.post('/api/posts', { ...form, service_tag: form.service_name || null, naver_id: naverUser?.id || null });
       setShowForm(false);
-      setForm({ nickname: '', title: '', content: '', category: 'general' });
+      setForm({ nickname: '', title: '', content: '', category: 'general', service_name: '', discount_rate: '', promo_start: '', promo_end: '' });
       navigate(`/community/${res.data.id}`);
     } finally {
       setSubmitting(false);
@@ -129,6 +129,23 @@ export default function Community() {
                   <option key={s.id} value={s.name}>{s.name}</option>
                 ))}
               </select>
+            </div>
+            <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>할인율 (%)</label>
+                <input type="number" min="1" max="100" value={form.discount_rate} onChange={e => setForm({ ...form, discount_rate: e.target.value })}
+                  placeholder="예) 30" style={{ ...inputStyle, width: '100%', boxSizing: 'border-box' }} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>시작일</label>
+                <input type="date" value={form.promo_start} onChange={e => setForm({ ...form, promo_start: e.target.value })}
+                  style={{ ...inputStyle, width: '100%', boxSizing: 'border-box' }} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>종료일</label>
+                <input type="date" value={form.promo_end} onChange={e => setForm({ ...form, promo_end: e.target.value })}
+                  style={{ ...inputStyle, width: '100%', boxSizing: 'border-box' }} />
+              </div>
             </div>
           )}
           <div style={{ marginBottom: 10, position: 'relative' }}>
@@ -188,6 +205,8 @@ export default function Community() {
                 <span style={{ fontSize: 11, fontWeight: 700, background: categoryColor(p.category), color: '#fff', borderRadius: 6, padding: '2px 8px' }}>
                   {CATEGORIES.find(c => c.key === p.category)?.label || p.category}
                 </span>
+                {p.discount_rate && <span style={{ fontSize: 11, fontWeight: 700, background: '#EF4444', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>🔥 {p.discount_rate}% 할인</span>}
+                {p.promo_end && <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>~{p.promo_end}</span>}
                 <span style={{ fontWeight: 700, fontSize: 15, flex: 1 }}>{p.title}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 12, color: 'var(--text-tertiary)' }}>
@@ -283,10 +302,16 @@ export function PostDetail() {
 
       {/* 게시글 */}
       <div style={{ background: 'var(--card)', borderRadius: 'var(--radius)', border: '1px solid var(--border)', boxShadow: 'var(--shadow)', padding: '28px 32px', marginBottom: 20 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
           <span style={{ fontSize: 11, fontWeight: 700, background: categoryColor(post.category), color: '#fff', borderRadius: 6, padding: '2px 8px' }}>
             {CATEGORIES.find(c => c.key === post.category)?.label || post.category}
           </span>
+          {post.discount_rate && <span style={{ fontSize: 11, fontWeight: 700, background: '#EF4444', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>🔥 {post.discount_rate}% 할인</span>}
+          {(post.promo_start || post.promo_end) && (
+            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>
+              📅 {post.promo_start || '?'} ~ {post.promo_end || '?'}
+            </span>
+          )}
         </div>
         <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 14, lineHeight: 1.4 }}>{post.title}</h1>
         <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--text-tertiary)', marginBottom: 24, paddingBottom: 18, borderBottom: '1px solid var(--border)' }}>

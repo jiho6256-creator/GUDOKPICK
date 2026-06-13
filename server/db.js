@@ -52,6 +52,9 @@ db.exec(`
     content TEXT NOT NULL,
     category TEXT DEFAULT 'general',
     service_tag TEXT,
+    discount_rate INTEGER,
+    promo_start TEXT,
+    promo_end TEXT,
     view_count INTEGER DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
@@ -86,8 +89,11 @@ db.exec(`
   );
 `);
 
-// Migrate: add service_tag column if not exists
+// Migrate: add columns if not exists
 try { db.exec('ALTER TABLE posts ADD COLUMN service_tag TEXT'); } catch {}
+try { db.exec('ALTER TABLE posts ADD COLUMN discount_rate INTEGER'); } catch {}
+try { db.exec('ALTER TABLE posts ADD COLUMN promo_start TEXT'); } catch {}
+try { db.exec('ALTER TABLE posts ADD COLUMN promo_end TEXT'); } catch {}
 
 // Seed carousel cards
 const carouselCount = db.prepare('SELECT COUNT(*) as c FROM carousel_cards').get();
