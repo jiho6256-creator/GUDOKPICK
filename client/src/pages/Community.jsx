@@ -7,7 +7,7 @@ const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://loca
 
 const CATEGORIES = [
   { key: 'all', label: '전체' },
-  { key: 'deal', label: '진행 중인 프로모션' },
+  { key: 'deal', label: '진행 중' },
   { key: 'general', label: '자유' },
 ];
 
@@ -236,7 +236,7 @@ export default function Community() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
             <h3 style={{ fontWeight: 700, fontSize: 15 }}>새 게시글 작성</h3>
             <span style={{ fontSize: 12, fontWeight: 700, background: 'var(--primary)', color: '#fff', borderRadius: 20, padding: '3px 12px' }}>
-              {form.category === 'deal' ? '진행 중인 프로모션' : '자유'}
+              {form.category === 'deal' ? '진행 중' : '자유'}
             </span>
           </div>
           {form.category === 'deal' && (
@@ -322,7 +322,10 @@ export default function Community() {
                   {CATEGORIES.find(c => c.key === p.category)?.label || p.category}
                 </span>
                 {p.discount_rate && <span style={{ fontSize: 11, fontWeight: 700, background: '#EF4444', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>🔥 {p.discount_rate}% 할인</span>}
-                {p.promo_end && <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>~{p.promo_end}</span>}
+                {p.promo_end && (new Date(p.promo_end) < new Date()
+                  ? <span style={{ fontSize: 11, fontWeight: 700, background: '#9CA3AF', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>종료됨</span>
+                  : <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>~{p.promo_end}</span>
+                )}
                 <span style={{ fontWeight: 700, fontSize: 15, flex: 1 }}>{p.title}</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 12, color: 'var(--text-tertiary)' }}>
@@ -437,9 +440,11 @@ export function PostDetail() {
           </span>
           {!editing && post.discount_rate && <span style={{ fontSize: 11, fontWeight: 700, background: '#EF4444', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>🔥 {post.discount_rate}% 할인</span>}
           {!editing && (post.promo_start || post.promo_end) && (
-            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>
-              📅 {post.promo_start || '?'} ~ {post.promo_end || '?'}
-            </span>
+            post.promo_end && new Date(post.promo_end) < new Date()
+              ? <span style={{ fontSize: 11, fontWeight: 700, background: '#9CA3AF', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>종료됨</span>
+              : <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>
+                  📅 {post.promo_start || '?'} ~ {post.promo_end || '?'}
+                </span>
           )}
           {naverUser?.id === post.naver_id && !editing && (
             <button onClick={() => startEdit(post)} style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--primary)', fontWeight: 700, border: '1px solid var(--primary)', borderRadius: 6, padding: '2px 10px', background: 'var(--primary-bg)' }}>수정</button>

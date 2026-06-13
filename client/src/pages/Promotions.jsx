@@ -46,7 +46,7 @@ export default function Promotions() {
             <section style={{ marginBottom: 36 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
                 <Flame size={18} color="#FF6B6B" fill="#FF6B6B" />
-                <h2 style={{ fontSize: 18, fontWeight: 700 }}>진행 중인 프로모션</h2>
+                <h2 style={{ fontSize: 18, fontWeight: 700 }}>진행 중</h2>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 16 }}>
                 {active.map(p => <PromoCard key={p.id} promo={p} navigate={navigate} />)}
