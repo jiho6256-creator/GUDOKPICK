@@ -536,7 +536,9 @@ export function PostDetail() {
           </div>
         ) : (
           <>
-            <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 14, lineHeight: 1.4 }}>{post.title}</h1>
+            <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 14, lineHeight: 1.4 }}>
+              {post.service_tag && <span style={{ color: 'var(--text)', marginRight: 6 }}>[{post.service_tag}]</span>}{post.title}
+            </h1>
             <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--text-tertiary)', marginBottom: 24, paddingBottom: 18, borderBottom: '1px solid var(--border)' }}>
               <span style={{ display: 'flex', alignItems: 'center', fontWeight: 700, color: 'var(--text-secondary)' }}>{post.nickname}<PlatformBadge naverId={post.naver_id} /></span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Clock size={12} />{timeAgo(post.created_at)}</span>
