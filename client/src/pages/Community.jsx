@@ -108,7 +108,7 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
         />
         {value
           ? <button onClick={clear} style={{ padding: '0 12px', color: 'var(--text-secondary)', fontSize: 16, fontWeight: 700 }}>×</button>
-          : <span style={{ padding: '0 12px', color: 'var(--text-secondary)', fontSize: 12 }}>▼</span>
+          : <span onClick={() => setOpen(v => !v)} style={{ padding: '0 12px', color: 'var(--text-secondary)', fontSize: 12, cursor: 'pointer' }}>▼</span>
         }
       </div>
       {open && !value && (
