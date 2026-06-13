@@ -495,7 +495,18 @@ export function PostDetail() {
             </span>
           )}
           {naverUser?.id === post.naver_id && !editing && (
-            <button onClick={() => startEdit(post)} style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--primary)', fontWeight: 700, border: '1px solid var(--primary)', borderRadius: 6, padding: '2px 10px', background: 'var(--primary-bg)' }}>수정</button>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: 6 }}>
+              <button onClick={() => startEdit(post)} style={{ fontSize: 12, color: 'var(--primary)', fontWeight: 700, border: '1px solid var(--primary)', borderRadius: 6, padding: '2px 10px', background: 'var(--primary-bg)' }}>수정</button>
+              <button onClick={async () => {
+                if (!confirm('게시글을 삭제할까요?')) return;
+                const isAdmin = naverUser.id === 'guest_adm_v8r3kx92mw';
+                await api.delete(`/api/posts/${post.id}`, { headers: {
+                  'x-naver-id': naverUser.id,
+                  ...(isAdmin ? { 'x-admin-key': import.meta.env.VITE_ADMIN_KEY || '1234' } : {}),
+                }});
+                navigate('/community');
+              }} style={{ fontSize: 12, color: '#EF4444', fontWeight: 700, border: '1px solid #EF4444', borderRadius: 6, padding: '2px 10px', background: '#FEF2F2' }}>삭제</button>
+            </div>
           )}
         </div>
 

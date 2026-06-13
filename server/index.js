@@ -251,9 +251,15 @@ app.put('/api/posts/:id', (req, res) => {
   res.json({ ok: true });
 });
 
-// DELETE post (admin)
-app.delete('/api/posts/:id', adminAuth, (req, res) => {
+// DELETE post (본인 또는 admin)
+app.delete('/api/posts/:id', (req, res) => {
+  const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.id);
+  if (!post) return res.status(404).json({ error: 'Not found' });
+  const isAdmin = req.headers['x-admin-key'] === (process.env.ADMIN_KEY || '1234');
+  const isOwner = req.headers['x-naver-id'] && req.headers['x-naver-id'] === post.naver_id;
+  if (!isAdmin && !isOwner) return res.status(403).json({ error: 'forbidden' });
   db.prepare('DELETE FROM post_comments WHERE post_id = ?').run(req.params.id);
+  db.prepare('DELETE FROM post_likes WHERE post_id = ?').run(req.params.id);
   db.prepare('DELETE FROM posts WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
 });
