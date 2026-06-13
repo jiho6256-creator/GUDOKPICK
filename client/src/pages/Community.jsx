@@ -354,6 +354,8 @@ export function PostDetail() {
   const [likeCount, setLikeCount] = useState(0);
   const [liking, setLiking] = useState(false);
   const [naverUser, setNaverUser] = useState(getNaverUser);
+  const [editing, setEditing] = useState(false);
+  const [editForm, setEditForm] = useState({ title: '', content: '', discount_rate: '', promo_start: '', promo_end: '', service_tag: '' });
 
   useEffect(() => {
     if (naverUser) setCommentForm(f => ({ ...f, nickname: naverUser.nickname }));
@@ -379,6 +381,17 @@ export function PostDetail() {
   };
 
   useEffect(() => { load(); }, [id]);
+
+  const startEdit = (p) => {
+    setEditForm({ title: p.title, content: p.content, discount_rate: p.discount_rate || '', promo_start: p.promo_start || '', promo_end: p.promo_end || '', service_tag: p.service_tag || '' });
+    setEditing(true);
+  };
+
+  const saveEdit = async () => {
+    await api.put(`/api/posts/${id}`, { ...editForm, naver_id: naverUser?.id });
+    setEditing(false);
+    load();
+  };
 
   const submitComment = async () => {
     if (!commentForm.nickname || !commentForm.content) return;
@@ -422,23 +435,50 @@ export function PostDetail() {
           <span style={{ fontSize: 11, fontWeight: 700, background: categoryColor(post.category), color: '#fff', borderRadius: 6, padding: '2px 8px' }}>
             {CATEGORIES.find(c => c.key === post.category)?.label || post.category}
           </span>
-          {post.discount_rate && <span style={{ fontSize: 11, fontWeight: 700, background: '#EF4444', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>🔥 {post.discount_rate}% 할인</span>}
-          {(post.promo_start || post.promo_end) && (
+          {!editing && post.discount_rate && <span style={{ fontSize: 11, fontWeight: 700, background: '#EF4444', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>🔥 {post.discount_rate}% 할인</span>}
+          {!editing && (post.promo_start || post.promo_end) && (
             <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>
               📅 {post.promo_start || '?'} ~ {post.promo_end || '?'}
             </span>
           )}
+          {naverUser?.id === post.naver_id && !editing && (
+            <button onClick={() => startEdit(post)} style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--primary)', fontWeight: 700, border: '1px solid var(--primary)', borderRadius: 6, padding: '2px 10px', background: 'var(--primary-bg)' }}>수정</button>
+          )}
         </div>
-        <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 14, lineHeight: 1.4 }}>{post.title}</h1>
-        <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--text-tertiary)', marginBottom: 24, paddingBottom: 18, borderBottom: '1px solid var(--border)' }}>
-          <span style={{ display: 'flex', alignItems: 'center', fontWeight: 700, color: 'var(--text-secondary)' }}>{post.nickname}<PlatformBadge naverId={post.naver_id} /></span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Clock size={12} />{timeAgo(post.created_at)}</span>
-          <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Eye size={12} />{post.view_count}</span>
-        </div>
-        <p style={{ fontSize: 15, lineHeight: 1.8, color: 'var(--text)', whiteSpace: 'pre-wrap', marginBottom: 28 }}>{post.content}</p>
+
+        {editing ? (
+          <div>
+            <input value={editForm.title} onChange={e => setEditForm({ ...editForm, title: e.target.value })}
+              style={{ width: '100%', boxSizing: 'border-box', border: '1.5px solid var(--border)', borderRadius: 10, padding: '10px 14px', fontSize: 16, fontWeight: 700, marginBottom: 10, fontFamily: 'inherit' }} />
+            {post.category === 'deal' && (
+              <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+                <input type="number" min="1" max="100" value={editForm.discount_rate} onChange={e => setEditForm({ ...editForm, discount_rate: e.target.value })}
+                  placeholder="할인율 (%)" style={{ flex: 1, border: '1.5px solid var(--border)', borderRadius: 10, padding: '8px 12px', fontSize: 13, fontFamily: 'inherit' }} />
+                <DateInput value={editForm.promo_start} onChange={v => setEditForm({ ...editForm, promo_start: v })} inputStyle={{ padding: '8px 12px', fontSize: 13, fontFamily: 'inherit' }} />
+                <DateInput value={editForm.promo_end} onChange={v => setEditForm({ ...editForm, promo_end: v })} inputStyle={{ padding: '8px 12px', fontSize: 13, fontFamily: 'inherit' }} />
+              </div>
+            )}
+            <textarea value={editForm.content} onChange={e => setEditForm({ ...editForm, content: e.target.value })}
+              rows={6} style={{ width: '100%', boxSizing: 'border-box', border: '1.5px solid var(--border)', borderRadius: 10, padding: '10px 14px', fontSize: 15, resize: 'vertical', marginBottom: 12, fontFamily: 'inherit' }} />
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={saveEdit} style={{ background: 'var(--primary)', color: '#fff', borderRadius: 10, padding: '9px 20px', fontWeight: 700, fontSize: 14 }}>저장</button>
+              <button onClick={() => setEditing(false)} style={{ background: '#fff', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 10, padding: '9px 20px', fontWeight: 700, fontSize: 14 }}>취소</button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 14, lineHeight: 1.4 }}>{post.title}</h1>
+            <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--text-tertiary)', marginBottom: 24, paddingBottom: 18, borderBottom: '1px solid var(--border)' }}>
+              <span style={{ display: 'flex', alignItems: 'center', fontWeight: 700, color: 'var(--text-secondary)' }}>{post.nickname}<PlatformBadge naverId={post.naver_id} /></span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Clock size={12} />{timeAgo(post.created_at)}</span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Eye size={12} />{post.view_count}</span>
+            </div>
+            <p style={{ fontSize: 15, lineHeight: 1.8, color: 'var(--text)', whiteSpace: 'pre-wrap', marginBottom: 28 }}>{post.content}</p>
+          </>
+        )}
 
         {/* 추천 버튼 */}
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        {!editing && <div style={{ display: 'flex', justifyContent: 'center' }}>
           <button onClick={toggleLike} style={{
             display: 'flex', alignItems: 'center', gap: 8,
             padding: '12px 28px', borderRadius: 50,
@@ -451,7 +491,7 @@ export function PostDetail() {
             <ThumbsUp size={18} fill={liked ? '#fff' : 'none'} />
             추천 {likeCount}
           </button>
-        </div>
+        </div>}
       </div>
 
       {/* 댓글 */}

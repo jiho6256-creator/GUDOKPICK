@@ -239,6 +239,18 @@ app.post('/api/posts/:id/like', (req, res) => {
   }
 });
 
+// PUT update post (본인 확인)
+app.put('/api/posts/:id', (req, res) => {
+  const { naver_id, title, content, discount_rate, promo_start, promo_end, service_tag } = req.body;
+  if (!naver_id || !title || !content) return res.status(400).json({ error: 'required fields missing' });
+  const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.id);
+  if (!post) return res.status(404).json({ error: 'Not found' });
+  if (post.naver_id !== naver_id) return res.status(403).json({ error: 'forbidden' });
+  db.prepare('UPDATE posts SET title=?, content=?, discount_rate=?, promo_start=?, promo_end=?, service_tag=? WHERE id=?')
+    .run(title.slice(0, 100), content.slice(0, 2000), discount_rate || null, promo_start || null, promo_end || null, service_tag || null, req.params.id);
+  res.json({ ok: true });
+});
+
 // DELETE post (admin)
 app.delete('/api/posts/:id', adminAuth, (req, res) => {
   db.prepare('DELETE FROM post_comments WHERE post_id = ?').run(req.params.id);
