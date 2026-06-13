@@ -23,7 +23,7 @@ function matchChosung(name, query) {
   if (!query) return true;
   const isChosung = [...query].every(ch => CHOSUNG.includes(ch));
   if (isChosung) return getChosung(name).startsWith(query);
-  return name.toLowerCase().includes(query.toLowerCase());
+  return name.toLowerCase().startsWith(query.toLowerCase());
 }
 
 function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
