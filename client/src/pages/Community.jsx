@@ -38,7 +38,7 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
   }, []);
 
   const sorted = [...services].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
-  const filtered = query.length < 2 ? sorted : sorted.filter(s => matchChosung(s.name, query));
+  const filtered = sorted.filter(s => matchChosung(s.name, query));
 
   const select = (name) => { onChange(name); setQuery(''); setOpen(false); };
   const clear = () => { onChange(''); setQuery(''); };
