@@ -318,13 +318,15 @@ export default function Community() {
               onMouseLeave={e => e.currentTarget.style.background = ''}
             >
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
-                <span style={{ fontSize: 11, fontWeight: 700, background: categoryColor(p.category), color: '#fff', borderRadius: 6, padding: '2px 8px' }}>
-                  {CATEGORIES.find(c => c.key === p.category)?.label || p.category}
-                </span>
+                {p.category === 'deal'
+                  ? (p.promo_end && new Date(p.promo_end) < new Date()
+                    ? <span style={{ fontSize: 11, fontWeight: 700, background: '#9CA3AF', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>종료됨</span>
+                    : <span style={{ fontSize: 11, fontWeight: 700, background: categoryColor(p.category), color: '#fff', borderRadius: 6, padding: '2px 8px' }}>진행 중</span>)
+                  : <span style={{ fontSize: 11, fontWeight: 700, background: categoryColor(p.category), color: '#fff', borderRadius: 6, padding: '2px 8px' }}>{CATEGORIES.find(c => c.key === p.category)?.label || p.category}</span>
+                }
                 {p.discount_rate && <span style={{ fontSize: 11, fontWeight: 700, background: '#EF4444', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>🔥 {p.discount_rate}% 할인</span>}
-                {p.promo_end && (new Date(p.promo_end) < new Date()
-                  ? <span style={{ fontSize: 11, fontWeight: 700, background: '#9CA3AF', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>종료됨</span>
-                  : <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>~{p.promo_end}</span>
+                {p.category === 'deal' && p.promo_end && !(new Date(p.promo_end) < new Date()) && (
+                  <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>~{p.promo_end}</span>
                 )}
                 <span style={{ fontWeight: 700, fontSize: 15, flex: 1 }}>{p.title}</span>
               </div>
@@ -435,16 +437,17 @@ export function PostDetail() {
       {/* 게시글 */}
       <div style={{ background: 'var(--card)', borderRadius: 'var(--radius)', border: '1px solid var(--border)', boxShadow: 'var(--shadow)', padding: '28px 32px', marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, background: categoryColor(post.category), color: '#fff', borderRadius: 6, padding: '2px 8px' }}>
-            {CATEGORIES.find(c => c.key === post.category)?.label || post.category}
-          </span>
-          {!editing && post.discount_rate && <span style={{ fontSize: 11, fontWeight: 700, background: '#EF4444', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>🔥 {post.discount_rate}% 할인</span>}
-          {!editing && (post.promo_start || post.promo_end) && (
-            post.promo_end && new Date(post.promo_end) < new Date()
+          {post.category === 'deal'
+            ? (post.promo_end && new Date(post.promo_end) < new Date()
               ? <span style={{ fontSize: 11, fontWeight: 700, background: '#9CA3AF', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>종료됨</span>
-              : <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>
-                  📅 {post.promo_start || '?'} ~ {post.promo_end || '?'}
-                </span>
+              : <span style={{ fontSize: 11, fontWeight: 700, background: categoryColor(post.category), color: '#fff', borderRadius: 6, padding: '2px 8px' }}>진행 중</span>)
+            : <span style={{ fontSize: 11, fontWeight: 700, background: categoryColor(post.category), color: '#fff', borderRadius: 6, padding: '2px 8px' }}>{CATEGORIES.find(c => c.key === post.category)?.label || post.category}</span>
+          }
+          {!editing && post.discount_rate && <span style={{ fontSize: 11, fontWeight: 700, background: '#EF4444', color: '#fff', borderRadius: 6, padding: '2px 8px' }}>🔥 {post.discount_rate}% 할인</span>}
+          {!editing && post.category === 'deal' && (post.promo_start || post.promo_end) && !(post.promo_end && new Date(post.promo_end) < new Date()) && (
+            <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '2px 8px' }}>
+              📅 {post.promo_start || '?'} ~ {post.promo_end || '?'}
+            </span>
           )}
           {naverUser?.id === post.naver_id && !editing && (
             <button onClick={() => startEdit(post)} style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--primary)', fontWeight: 700, border: '1px solid var(--primary)', borderRadius: 6, padding: '2px 10px', background: 'var(--primary-bg)' }}>수정</button>
