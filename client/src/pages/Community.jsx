@@ -249,9 +249,13 @@ export default function Community() {
             />
             <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
               <div style={{ flex: 1 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>할인율 (%)</label>
-                <input type="number" min="1" max="100" value={form.discount_rate} onChange={e => setForm({ ...form, discount_rate: e.target.value })}
-                  placeholder="예) 30" style={{ ...inputStyle, width: '100%', boxSizing: 'border-box' }} />
+                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>할인율</label>
+                <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid var(--border)', borderRadius: 10, background: '#fff', overflow: 'hidden' }}>
+                  <span style={{ padding: '0 10px', fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', borderRight: '1px solid var(--border)', whiteSpace: 'nowrap' }}>할인률</span>
+                  <input type="number" min="1" max="100" value={form.discount_rate} onChange={e => setForm({ ...form, discount_rate: e.target.value })}
+                    placeholder="30" style={{ ...inputStyle, flex: 1, border: 'none', outline: 'none', margin: 0, borderRadius: 0, background: 'transparent', width: 0 }} />
+                  <span style={{ padding: '0 10px', fontSize: 13, color: 'var(--text-secondary)' }}>%</span>
+                </div>
               </div>
               <div style={{ flex: 1 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>시작일</label>
@@ -460,8 +464,12 @@ export function PostDetail() {
               style={{ width: '100%', boxSizing: 'border-box', border: '1.5px solid var(--border)', borderRadius: 10, padding: '10px 14px', fontSize: 16, fontWeight: 700, marginBottom: 10, fontFamily: 'inherit' }} />
             {post.category === 'deal' && (
               <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
-                <input type="number" min="1" max="100" value={editForm.discount_rate} onChange={e => setEditForm({ ...editForm, discount_rate: e.target.value })}
-                  placeholder="할인율 (%)" style={{ flex: 1, border: '1.5px solid var(--border)', borderRadius: 10, padding: '8px 12px', fontSize: 13, fontFamily: 'inherit' }} />
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', border: '1.5px solid var(--border)', borderRadius: 10, background: '#fff', overflow: 'hidden' }}>
+                  <span style={{ padding: '0 10px', fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', borderRight: '1px solid var(--border)', whiteSpace: 'nowrap' }}>할인률</span>
+                  <input type="number" min="1" max="100" value={editForm.discount_rate} onChange={e => setEditForm({ ...editForm, discount_rate: e.target.value })}
+                    placeholder="30" style={{ flex: 1, border: 'none', outline: 'none', padding: '8px 8px', fontSize: 13, fontFamily: 'inherit', background: 'transparent', width: 0 }} />
+                  <span style={{ padding: '0 10px', fontSize: 13, color: 'var(--text-secondary)' }}>%</span>
+                </div>
                 <DateInput value={editForm.promo_start} onChange={v => setEditForm({ ...editForm, promo_start: v })} inputStyle={{ padding: '8px 12px', fontSize: 13, fontFamily: 'inherit' }} />
                 <DateInput value={editForm.promo_end} onChange={v => setEditForm({ ...editForm, promo_end: v })} inputStyle={{ padding: '8px 12px', fontSize: 13, fontFamily: 'inherit' }} />
               </div>
