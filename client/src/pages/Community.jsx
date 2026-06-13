@@ -171,8 +171,20 @@ export default function Community() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ nickname: '', title: '', content: '', category: 'general', service_name: '', discount_rate: '', promo_start: '', promo_end: '' });
   const [submitting, setSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
+  const [uploading, setUploading] = useState(false);
   const [services, setServices] = useState([]);
   const [naverUser, setNaverUser] = useState(getNaverUser);
+
+  const uploadToCloudinary = async (file) => {
+    const data = new FormData();
+    data.append('file', file);
+    data.append('upload_preset', 'jaeezkgh');
+    const res = await fetch('https://api.cloudinary.com/v1_1/dazyzaeda/image/upload', { method: 'POST', body: data });
+    const json = await res.json();
+    return json.secure_url;
+  };
 
   useEffect(() => {
     if (naverUser) setForm(f => ({ ...f, nickname: naverUser.nickname }));
@@ -205,12 +217,21 @@ export default function Community() {
     if (!form.nickname || !form.title || !form.content) return;
     setSubmitting(true);
     try {
-      const res = await api.post('/api/posts', { ...form, service_tag: form.service_name || null, naver_id: naverUser?.id || null });
+      let image_url = null;
+      if (imageFile) {
+        setUploading(true);
+        image_url = await uploadToCloudinary(imageFile);
+        setUploading(false);
+      }
+      const res = await api.post('/api/posts', { ...form, service_tag: form.service_name || null, naver_id: naverUser?.id || null, image_url });
       setShowForm(false);
       setForm({ nickname: '', title: '', content: '', category: 'general', service_name: '', discount_rate: '', promo_start: '', promo_end: '' });
+      setImageFile(null);
+      setImagePreview('');
       navigate(`/community/${res.data.id}`);
     } finally {
       setSubmitting(false);
+      setUploading(false);
     }
   };
 
@@ -279,11 +300,31 @@ export default function Community() {
             style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', marginBottom: 10 }} />
           <textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })}
             placeholder="내용을 입력해주세요" maxLength={2000} rows={5}
-            style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', resize: 'vertical', marginBottom: 12 }} />
+            style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', resize: 'vertical', marginBottom: 10 }} />
+          {/* 이미지 업로드 */}
+          <div style={{ marginBottom: 12 }}>
+            {imagePreview ? (
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <img src={imagePreview} alt="preview" style={{ maxHeight: 200, maxWidth: '100%', borderRadius: 10, border: '1.5px solid var(--border)', display: 'block' }} />
+                <button type="button" onClick={() => { setImageFile(null); setImagePreview(''); }}
+                  style={{ position: 'absolute', top: 6, right: 6, background: 'rgba(0,0,0,0.55)', color: '#fff', borderRadius: '50%', width: 24, height: 24, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>×</button>
+              </div>
+            ) : (
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1.5px dashed var(--border)', borderRadius: 10, padding: '8px 16px' }}>
+                🖼️ 이미지 첨부
+                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setImageFile(file);
+                  setImagePreview(URL.createObjectURL(file));
+                }} />
+              </label>
+            )}
+          </div>
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={submit} disabled={!form.nickname || !form.title || !form.content || (form.category === 'deal' && !form.service_name) || submitting}
               style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--primary)', color: '#fff', borderRadius: 10, padding: '10px 20px', fontWeight: 700, fontSize: 14, opacity: (!form.nickname || !form.title || !form.content || (form.category === 'deal' && !form.service_name)) ? 0.5 : 1 }}>
-              <Send size={14} /> {submitting ? '등록 중...' : '등록'}
+              <Send size={14} /> {uploading ? '이미지 업로드 중...' : submitting ? '등록 중...' : '등록'}
             </button>
             <button onClick={() => setShowForm(false)} style={{ background: '#fff', color: 'var(--text-secondary)', borderRadius: 10, padding: '10px 20px', fontWeight: 700, fontSize: 14, border: '1px solid var(--border)' }}>
               취소
@@ -489,7 +530,10 @@ export function PostDetail() {
               <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Clock size={12} />{timeAgo(post.created_at)}</span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Eye size={12} />{post.view_count}</span>
             </div>
-            <p style={{ fontSize: 15, lineHeight: 1.8, color: 'var(--text)', whiteSpace: 'pre-wrap', marginBottom: 28 }}>{post.content}</p>
+            <p style={{ fontSize: 15, lineHeight: 1.8, color: 'var(--text)', whiteSpace: 'pre-wrap', marginBottom: post.image_url ? 16 : 28 }}>{post.content}</p>
+            {post.image_url && (
+              <img src={post.image_url} alt="첨부 이미지" style={{ maxWidth: '100%', borderRadius: 12, border: '1px solid var(--border)', marginBottom: 28, display: 'block' }} />
+            )}
           </>
         )}
 

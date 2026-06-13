@@ -205,11 +205,11 @@ app.get('/api/posts/by-service/:name', (req, res) => {
 
 // POST create post
 app.post('/api/posts', (req, res) => {
-  const { nickname, title, content, category, service_tag, discount_rate, promo_start, promo_end, naver_id } = req.body;
+  const { nickname, title, content, category, service_tag, discount_rate, promo_start, promo_end, naver_id, image_url } = req.body;
   if (!nickname || !title || !content) return res.status(400).json({ error: 'nickname, title, content required' });
   const result = db.prepare(
-    'INSERT INTO posts (nickname, naver_id, title, content, category, service_tag, discount_rate, promo_start, promo_end) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-  ).run(nickname.slice(0, 20), naver_id || null, title.slice(0, 100), content.slice(0, 2000), category || 'general', service_tag || null, discount_rate || null, promo_start || null, promo_end || null);
+    'INSERT INTO posts (nickname, naver_id, title, content, category, service_tag, discount_rate, promo_start, promo_end, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+  ).run(nickname.slice(0, 20), naver_id || null, title.slice(0, 100), content.slice(0, 2000), category || 'general', service_tag || null, discount_rate || null, promo_start || null, promo_end || null, image_url || null);
   res.json({ id: result.lastInsertRowid });
 });
 
@@ -241,13 +241,13 @@ app.post('/api/posts/:id/like', (req, res) => {
 
 // PUT update post (본인 확인)
 app.put('/api/posts/:id', (req, res) => {
-  const { naver_id, title, content, discount_rate, promo_start, promo_end, service_tag } = req.body;
+  const { naver_id, title, content, discount_rate, promo_start, promo_end, service_tag, image_url } = req.body;
   if (!naver_id || !title || !content) return res.status(400).json({ error: 'required fields missing' });
   const post = db.prepare('SELECT * FROM posts WHERE id = ?').get(req.params.id);
   if (!post) return res.status(404).json({ error: 'Not found' });
   if (post.naver_id !== naver_id) return res.status(403).json({ error: 'forbidden' });
-  db.prepare('UPDATE posts SET title=?, content=?, discount_rate=?, promo_start=?, promo_end=?, service_tag=? WHERE id=?')
-    .run(title.slice(0, 100), content.slice(0, 2000), discount_rate || null, promo_start || null, promo_end || null, service_tag || null, req.params.id);
+  db.prepare('UPDATE posts SET title=?, content=?, discount_rate=?, promo_start=?, promo_end=?, service_tag=?, image_url=? WHERE id=?')
+    .run(title.slice(0, 100), content.slice(0, 2000), discount_rate || null, promo_start || null, promo_end || null, service_tag || null, image_url !== undefined ? image_url : post.image_url, req.params.id);
   res.json({ ok: true });
 });
 

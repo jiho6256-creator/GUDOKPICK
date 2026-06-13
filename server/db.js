@@ -94,6 +94,7 @@ try { db.exec('ALTER TABLE posts ADD COLUMN service_tag TEXT'); } catch {}
 try { db.exec('ALTER TABLE posts ADD COLUMN discount_rate INTEGER'); } catch {}
 try { db.exec('ALTER TABLE posts ADD COLUMN promo_start TEXT'); } catch {}
 try { db.exec('ALTER TABLE posts ADD COLUMN promo_end TEXT'); } catch {}
+try { db.exec('ALTER TABLE posts ADD COLUMN image_url TEXT'); } catch {}
 
 // Seed carousel cards
 const carouselCount = db.prepare('SELECT COUNT(*) as c FROM carousel_cards').get();
