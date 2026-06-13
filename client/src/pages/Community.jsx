@@ -121,6 +121,7 @@ export default function Community() {
             </span>
           </div>
           {form.category === 'deal' && (
+            <>
             <div style={{ marginBottom: 10 }}>
               <select value={form.service_name} onChange={e => setForm({ ...form, service_name: e.target.value })}
                 style={{ ...inputStyle, width: '100%', boxSizing: 'border-box' }}>
@@ -147,6 +148,7 @@ export default function Community() {
                   style={{ ...inputStyle, width: '100%', boxSizing: 'border-box' }} />
               </div>
             </div>
+            </>
           )}
           <div style={{ marginBottom: 10, position: 'relative' }}>
             <input value={form.nickname} onChange={e => setForm({ ...form, nickname: e.target.value })}
