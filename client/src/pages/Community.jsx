@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, MessageCircle, Eye, Send, PenSquare, Clock, ThumbsUp } from 'lucide-react';
 import axios from 'axios';
@@ -10,6 +10,58 @@ const CATEGORIES = [
   { key: 'deal', label: '진행 중인 프로모션' },
   { key: 'general', label: '자유' },
 ];
+
+function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
+  const [query, setQuery] = useState('');
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handler = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const sorted = [...services].sort((a, b) => a.name.localeCompare(b.name, 'ko'));
+  const filtered = sorted.filter(s => s.name.includes(query));
+
+  const select = (name) => { onChange(name); setQuery(''); setOpen(false); };
+  const clear = () => { onChange(''); setQuery(''); };
+
+  return (
+    <div ref={ref} style={{ position: 'relative', marginBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid var(--border)', borderRadius: 10, background: '#fff', overflow: 'hidden' }}>
+        <input
+          value={value ? value : query}
+          onChange={e => { setQuery(e.target.value); onChange(''); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+          placeholder="서비스 검색 또는 선택"
+          readOnly={!!value}
+          style={{ ...inputStyle, flex: 1, border: 'none', outline: 'none', margin: 0, borderRadius: 0, background: 'transparent', cursor: value ? 'default' : 'text' }}
+        />
+        {value
+          ? <button onClick={clear} style={{ padding: '0 12px', color: 'var(--text-secondary)', fontSize: 16, fontWeight: 700 }}>×</button>
+          : <span style={{ padding: '0 12px', color: 'var(--text-secondary)', fontSize: 12 }}>▼</span>
+        }
+      </div>
+      {open && !value && (
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid var(--border)', borderRadius: 10, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', zIndex: 100, maxHeight: 200, overflowY: 'auto', marginTop: 4 }}>
+          {filtered.length === 0
+            ? <div style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontSize: 13 }}>검색 결과 없음</div>
+            : filtered.map(s => (
+              <div key={s.id} onMouseDown={() => select(s.name)}
+                style={{ padding: '10px 16px', fontSize: 14, cursor: 'pointer', borderBottom: '1px solid var(--border)' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-bg)'}
+                onMouseLeave={e => e.currentTarget.style.background = ''}>
+                {s.name}
+              </div>
+            ))
+          }
+        </div>
+      )}
+    </div>
+  );
+}
 
 function getNaverUser() {
   const n = localStorage.getItem('naver_nickname');
@@ -122,15 +174,12 @@ export default function Community() {
           </div>
           {form.category === 'deal' && (
             <>
-            <div style={{ marginBottom: 10 }}>
-              <select value={form.service_name} onChange={e => setForm({ ...form, service_name: e.target.value })}
-                style={{ ...inputStyle, width: '100%', boxSizing: 'border-box' }}>
-                <option value="">서비스 선택</option>
-                {services.map(s => (
-                  <option key={s.id} value={s.name}>{s.name}</option>
-                ))}
-              </select>
-            </div>
+            <ServiceSearchSelect
+              services={services}
+              value={form.service_name}
+              onChange={v => setForm({ ...form, service_name: v })}
+              inputStyle={inputStyle}
+            />
             <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
               <div style={{ flex: 1 }}>
                 <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>할인율 (%)</label>
