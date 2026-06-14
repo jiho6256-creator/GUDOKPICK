@@ -82,6 +82,7 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const handler = e => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
@@ -93,12 +94,13 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
   const filtered = sorted.filter(s => matchChosung(s.name, query));
 
   const select = (name) => { onChange(name); setQuery(''); setOpen(false); };
-  const clear = () => { onChange(''); setQuery(''); setOpen(true); };
+  const clear = () => { onChange(''); setQuery(''); setOpen(true); setTimeout(() => inputRef.current?.focus(), 0); };
 
   return (
     <div ref={ref} style={{ position: 'relative', marginBottom: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid var(--border)', borderRadius: 10, background: '#fff', overflow: 'hidden' }}>
         <input
+          ref={inputRef}
           value={value ? value : query}
           onChange={e => { setQuery(e.target.value); onChange(''); setOpen(true); }}
           onFocus={() => { if (!value) setOpen(true); }}
