@@ -133,6 +133,21 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
   );
 }
 
+function sanitizeHtml(html) {
+  if (!html) return '';
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  tmp.querySelectorAll('script,style,iframe,object,embed').forEach(el => el.remove());
+  tmp.querySelectorAll('*').forEach(el => {
+    [...el.attributes].forEach(attr => {
+      if (attr.name.startsWith('on') || (attr.name === 'href' && /^javascript/i.test(attr.value))) {
+        el.removeAttribute(attr.name);
+      }
+    });
+  });
+  return tmp.innerHTML;
+}
+
 function getNaverUser() {
   const n = localStorage.getItem('naver_nickname');
   const i = localStorage.getItem('naver_id');
@@ -174,11 +189,10 @@ export default function Community() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ nickname: '', title: '', content: '', category: 'general', service_name: '', discount_rate: '', promo_start: '', promo_end: '' });
   const [submitting, setSubmitting] = useState(false);
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
-  const [uploading, setUploading] = useState(false);
+  const [imgUploading, setImgUploading] = useState(false);
   const [services, setServices] = useState([]);
   const [naverUser, setNaverUser] = useState(getNaverUser);
+  const editorRef = useRef(null);
 
   const uploadToCloudinary = async (file) => {
     const data = new FormData();
@@ -187,6 +201,17 @@ export default function Community() {
     const res = await fetch('https://api.cloudinary.com/v1_1/dazyzaeda/image/upload', { method: 'POST', body: data });
     const json = await res.json();
     return json.secure_url;
+  };
+
+  const insertImage = async (file) => {
+    setImgUploading(true);
+    try {
+      const url = await uploadToCloudinary(file);
+      editorRef.current?.focus();
+      document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;height:auto;display:block;margin:4px 0;resize:both;overflow:auto;" />`);
+    } finally {
+      setImgUploading(false);
+    }
   };
 
   useEffect(() => {
@@ -217,24 +242,17 @@ export default function Community() {
   useEffect(() => { load(); }, [category]);
 
   const submit = async () => {
-    if (!form.nickname || !form.title || !form.content) return;
+    const content = editorRef.current?.innerHTML || '';
+    if (!form.nickname || !form.title || !content) return;
     setSubmitting(true);
     try {
-      let image_url = null;
-      if (imageFile) {
-        setUploading(true);
-        image_url = await uploadToCloudinary(imageFile);
-        setUploading(false);
-      }
-      const res = await api.post('/api/posts', { ...form, service_tag: form.service_name || null, naver_id: naverUser?.id || null, image_url });
+      const res = await api.post('/api/posts', { ...form, content, service_tag: form.service_name || null, naver_id: naverUser?.id || null });
       setShowForm(false);
       setForm({ nickname: '', title: '', content: '', category: 'general', service_name: '', discount_rate: '', promo_start: '', promo_end: '' });
-      setImageFile(null);
-      setImagePreview('');
+      if (editorRef.current) editorRef.current.innerHTML = '';
       navigate(`/community/${res.data.id}`);
     } finally {
       setSubmitting(false);
-      setUploading(false);
     }
   };
 
@@ -300,33 +318,26 @@ export default function Community() {
           <input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })}
             placeholder="제목" maxLength={100}
             style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', marginBottom: 10 }} />
-          <textarea value={form.content} onChange={e => setForm({ ...form, content: e.target.value })}
-            placeholder="내용을 입력해주세요" maxLength={2000} rows={5}
-            style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', resize: 'vertical', marginBottom: 10 }} />
-          {/* 이미지 업로드 */}
-          <div style={{ marginBottom: 12 }}>
-            {imagePreview ? (
-              <div style={{ position: 'relative', display: 'inline-block' }}>
-                <img src={imagePreview} alt="preview" style={{ maxHeight: 200, maxWidth: '100%', borderRadius: 10, border: '1.5px solid var(--border)', display: 'block' }} />
-                <button type="button" onClick={() => { setImageFile(null); setImagePreview(''); }}
-                  style={{ position: 'absolute', top: 6, right: 6, background: 'rgba(0,0,0,0.55)', color: '#fff', borderRadius: '50%', width: 24, height: 24, fontSize: 14, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>×</button>
-              </div>
-            ) : (
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, cursor: 'pointer', fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1.5px dashed var(--border)', borderRadius: 10, padding: '8px 16px' }}>
-                🖼️ 이미지 첨부
-                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  setImageFile(file);
-                  setImagePreview(URL.createObjectURL(file));
-                }} />
-              </label>
-            )}
+          {/* 에디터 툴바 */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+            <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4, cursor: imgUploading ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', opacity: imgUploading ? 0.6 : 1 }}>
+              🖼️ {imgUploading ? '업로드 중...' : '이미지 삽입'}
+              <input type="file" accept="image/*" disabled={imgUploading} style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) insertImage(f); e.target.value = ''; }} />
+            </label>
           </div>
+          {/* contentEditable 에디터 */}
+          <div
+            ref={editorRef}
+            contentEditable
+            suppressContentEditableWarning
+            data-placeholder="내용을 입력해주세요"
+            style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', minHeight: 120, outline: 'none', resize: 'vertical', overflow: 'auto', marginBottom: 12, lineHeight: 1.7, wordBreak: 'break-word' }}
+            className="post-editor"
+          />
           <div style={{ display: 'flex', gap: 8 }}>
-            <button onClick={submit} disabled={!form.nickname || !form.title || !form.content || (form.category === 'deal' && !form.service_name) || submitting}
-              style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--primary)', color: '#fff', borderRadius: 10, padding: '10px 20px', fontWeight: 700, fontSize: 14, opacity: (!form.nickname || !form.title || !form.content || (form.category === 'deal' && !form.service_name)) ? 0.5 : 1 }}>
-              <Send size={14} /> {uploading ? '이미지 업로드 중...' : submitting ? '등록 중...' : '등록'}
+            <button onClick={submit} disabled={!form.nickname || !form.title || (form.category === 'deal' && !form.service_name) || submitting}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--primary)', color: '#fff', borderRadius: 10, padding: '10px 20px', fontWeight: 700, fontSize: 14, opacity: (!form.nickname || !form.title || (form.category === 'deal' && !form.service_name)) ? 0.5 : 1 }}>
+              <Send size={14} /> {submitting ? '등록 중...' : '등록'}
             </button>
             <button onClick={() => setShowForm(false)} style={{ background: '#fff', color: 'var(--text-secondary)', borderRadius: 10, padding: '10px 20px', fontWeight: 700, fontSize: 14, border: '1px solid var(--border)' }}>
               취소
@@ -410,6 +421,8 @@ export function PostDetail() {
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState({ title: '', content: '', discount_rate: '', promo_start: '', promo_end: '', service_tag: '' });
   const [services, setServices] = useState([]);
+  const [editImgUploading, setEditImgUploading] = useState(false);
+  const editEditorRef = useRef(null);
 
   useEffect(() => {
     api.get('/api/services').then(r => setServices(r.data)).catch(() => {});
@@ -443,12 +456,29 @@ export function PostDetail() {
   const startEdit = (p) => {
     setEditForm({ title: p.title, content: p.content, discount_rate: p.discount_rate || '', promo_start: p.promo_start || '', promo_end: p.promo_end || '', service_tag: p.service_tag || '' });
     setEditing(true);
+    setTimeout(() => { if (editEditorRef.current) editEditorRef.current.innerHTML = p.content || ''; }, 0);
   };
 
   const saveEdit = async () => {
-    await api.put(`/api/posts/${id}`, { ...editForm, naver_id: naverUser?.id });
+    const content = editEditorRef.current?.innerHTML || editForm.content;
+    await api.put(`/api/posts/${id}`, { ...editForm, content, naver_id: naverUser?.id });
     setEditing(false);
     load();
+  };
+
+  const insertEditImage = async (file) => {
+    setEditImgUploading(true);
+    try {
+      const data = new FormData();
+      data.append('file', file);
+      data.append('upload_preset', 'jaeezkgh');
+      const res = await fetch('https://api.cloudinary.com/v1_1/dazyzaeda/image/upload', { method: 'POST', body: data });
+      const json = await res.json();
+      editEditorRef.current?.focus();
+      document.execCommand('insertHTML', false, `<img src="${json.secure_url}" style="max-width:100%;height:auto;display:block;margin:4px 0;resize:both;overflow:auto;" />`);
+    } finally {
+      setEditImgUploading(false);
+    }
   };
 
   const submitComment = async () => {
@@ -538,8 +568,19 @@ export function PostDetail() {
               </div>
               </>
             )}
-            <textarea value={editForm.content} onChange={e => setEditForm({ ...editForm, content: e.target.value })}
-              rows={6} style={{ width: '100%', boxSizing: 'border-box', border: '1.5px solid var(--border)', borderRadius: 10, padding: '10px 14px', fontSize: 15, resize: 'vertical', marginBottom: 12, fontFamily: 'inherit' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4, cursor: editImgUploading ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', opacity: editImgUploading ? 0.6 : 1 }}>
+                🖼️ {editImgUploading ? '업로드 중...' : '이미지 삽입'}
+                <input type="file" accept="image/*" disabled={editImgUploading} style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) insertEditImage(f); e.target.value = ''; }} />
+              </label>
+            </div>
+            <div
+              ref={editEditorRef}
+              contentEditable
+              suppressContentEditableWarning
+              style={{ width: '100%', boxSizing: 'border-box', border: '1.5px solid var(--border)', borderRadius: 10, padding: '10px 14px', fontSize: 15, minHeight: 140, outline: 'none', resize: 'vertical', overflow: 'auto', marginBottom: 12, fontFamily: 'inherit', lineHeight: 1.7, wordBreak: 'break-word' }}
+              className="post-editor"
+            />
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={saveEdit} style={{ background: 'var(--primary)', color: '#fff', borderRadius: 10, padding: '9px 20px', fontWeight: 700, fontSize: 14 }}>저장</button>
               <button onClick={() => setEditing(false)} style={{ background: '#fff', color: 'var(--text-secondary)', border: '1px solid var(--border)', borderRadius: 10, padding: '9px 20px', fontWeight: 700, fontSize: 14 }}>취소</button>
@@ -555,10 +596,8 @@ export function PostDetail() {
               <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Clock size={12} />{timeAgo(post.created_at)}</span>
               <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><Eye size={12} />{post.view_count}</span>
             </div>
-            <p style={{ fontSize: 15, lineHeight: 1.8, color: 'var(--text)', whiteSpace: 'pre-wrap', marginBottom: post.image_url ? 16 : 28 }}>{post.content}</p>
-            {post.image_url && (
-              <img src={post.image_url} alt="첨부 이미지" style={{ maxWidth: '100%', borderRadius: 12, border: '1px solid var(--border)', marginBottom: 28, display: 'block' }} />
-            )}
+            <div style={{ fontSize: 15, lineHeight: 1.8, color: 'var(--text)', marginBottom: 28, wordBreak: 'break-word' }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }} />
           </>
         )}
 

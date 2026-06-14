@@ -88,3 +88,7 @@ p { margin: 0; }
 input[type='date'].date-empty::-webkit-datetime-edit { visibility: hidden; }
 input[type='number'].no-spinner::-webkit-inner-spin-button,
 input[type='number'].no-spinner::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+.post-editor:empty:before { content: attr(data-placeholder); color: #aaa; pointer-events: none; }
+.post-editor img { max-width: 100%; height: auto; display: block; margin: 4px 0; resize: both; overflow: auto; cursor: nw-resize; }
+.post-editor img:hover { outline: 2px solid var(--primary); }

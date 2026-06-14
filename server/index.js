@@ -209,7 +209,7 @@ app.post('/api/posts', (req, res) => {
   if (!nickname || !title || !content) return res.status(400).json({ error: 'nickname, title, content required' });
   const result = db.prepare(
     'INSERT INTO posts (nickname, naver_id, title, content, category, service_tag, discount_rate, promo_start, promo_end, image_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
-  ).run(nickname.slice(0, 20), naver_id || null, title.slice(0, 100), content.slice(0, 2000), category || 'general', service_tag || null, discount_rate || null, promo_start || null, promo_end || null, image_url || null);
+  ).run(nickname.slice(0, 20), naver_id || null, title.slice(0, 100), content.slice(0, 50000), category || 'general', service_tag || null, discount_rate || null, promo_start || null, promo_end || null, image_url || null);
   res.json({ id: result.lastInsertRowid });
 });
 
@@ -247,7 +247,7 @@ app.put('/api/posts/:id', (req, res) => {
   if (!post) return res.status(404).json({ error: 'Not found' });
   if (post.naver_id !== naver_id) return res.status(403).json({ error: 'forbidden' });
   db.prepare('UPDATE posts SET title=?, content=?, discount_rate=?, promo_start=?, promo_end=?, service_tag=?, image_url=? WHERE id=?')
-    .run(title.slice(0, 100), content.slice(0, 2000), discount_rate || null, promo_start || null, promo_end || null, service_tag || null, image_url !== undefined ? image_url : post.image_url, req.params.id);
+    .run(title.slice(0, 100), content.slice(0, 50000), discount_rate || null, promo_start || null, promo_end || null, service_tag || null, image_url !== undefined ? image_url : post.image_url, req.params.id);
   res.json({ ok: true });
 });
 
