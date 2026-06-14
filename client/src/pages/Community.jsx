@@ -273,7 +273,6 @@ export default function Community() {
             />
             <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
               <div style={{ flex: 1 }}>
-                <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)', marginBottom: 4, display: 'block' }}>할인율</label>
                 <div style={{ display: 'flex', alignItems: 'center', border: '1.5px solid var(--border)', borderRadius: 10, background: '#fff', overflow: 'hidden' }}>
                   <span style={{ padding: '0 10px', fontSize: 13, fontWeight: 700, color: 'var(--text-secondary)', borderRight: '1px solid var(--border)', whiteSpace: 'nowrap' }}>할인률</span>
                   <input type="number" min="1" max="100" value={form.discount_rate} onChange={e => setForm({ ...form, discount_rate: e.target.value })}
