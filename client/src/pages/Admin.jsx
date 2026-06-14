@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Save, X, ChevronDown, ChevronUp, Shield, Image } from 'lucide-react';
 import axios from 'axios';
 
-const ADMIN_KEY = '1234';
+const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY || '1234';
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000', headers: { 'x-admin-key': ADMIN_KEY } });
 
 const CATEGORIES = ['ott', 'shopping', 'music', 'ai', 'food', 'game'];
