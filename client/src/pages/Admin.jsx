@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Plus, Edit2, Trash2, Save, X, ChevronDown, ChevronUp, Shield, Image } from 'lucide-react';
 import axios from 'axios';
+import ServiceLogo from '../components/ServiceLogo';
 
 const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY || '1234';
 const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://localhost:4000', headers: { 'x-admin-key': ADMIN_KEY } });
@@ -215,25 +216,7 @@ export default function Admin() {
                   {editingId === s.id ? (
                     <ServiceForm form={form} setForm={setForm} onSave={saveEdit} onCancel={() => setEditingId(null)} onDelete={() => { setEditingId(null); deleteService(s.id, s.name); }} />
                   ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', padding: '14px 18px', borderBottom: '1px solid var(--border)', gap: 12 }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-bg)'}
-                      onMouseLeave={e => e.currentTarget.style.background = ''}
-                    >
-                      <div style={{ flex: 1, cursor: 'pointer' }} onClick={() => startEdit(s)}>
-                        <span style={{ fontWeight: 700, fontSize: 14 }}>{s.name}</span>
-                        <span style={{ fontSize: 12, color: 'var(--text-tertiary)', marginLeft: 8 }}>{s.logo}</span>
-                      </div>
-                      <span style={{ fontSize: 13, color: 'var(--primary)', fontWeight: 600, minWidth: 90 }}>{Number(s.monthly_price).toLocaleString()}원/월</span>
-                      <span style={{ fontSize: 12, color: 'var(--text-tertiary)', minWidth: 80 }}>무료체험 {s.trial_days}일</span>
-                      <div style={{ display: 'flex', gap: 8 }} onClick={e => e.stopPropagation()}>
-                        <button onClick={() => startEdit(s)} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 8, background: 'var(--primary-bg)', color: 'var(--primary)', fontSize: 13, fontWeight: 700, border: '1px solid var(--primary)', whiteSpace: 'nowrap' }}>
-                          <Edit2 size={13} /> 수정
-                        </button>
-                        <button onClick={() => deleteService(s.id, s.name)} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 8, background: '#FEE2E2', color: '#DC2626', fontSize: 13, fontWeight: 700, border: '1px solid #FCA5A5', whiteSpace: 'nowrap' }}>
-                          <Trash2 size={13} /> 삭제
-                        </button>
-                      </div>
-                    </div>
+                    <LogoRow s={s} onEdit={() => startEdit(s)} onDelete={() => deleteService(s.id, s.name)} onLogoSave={async (logo) => { await api.put(`/api/admin/services/${s.id}`, { ...s, logo }); load(); flash('로고 저장됨'); }} />
                   )}
                 </div>
               ))}
@@ -382,6 +365,56 @@ function Field({ label, value, onChange, type = 'text', placeholder }) {
       <label style={lStyle}>{label}</label>
       <input type={type} value={value ?? ''} onChange={e => onChange(e.target.value)} placeholder={placeholder}
         style={inputStyle} />
+    </div>
+  );
+}
+
+function LogoRow({ s, onEdit, onDelete, onLogoSave }) {
+  const [editingLogo, setEditingLogo] = useState(false);
+  const [logoVal, setLogoVal] = useState(s.logo || '');
+
+  const save = () => { onLogoSave(logoVal); setEditingLogo(false); };
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', padding: '12px 18px', borderBottom: '1px solid var(--border)', gap: 12 }}
+      onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-bg)'}
+      onMouseLeave={e => e.currentTarget.style.background = ''}
+    >
+      {/* 로고 클릭 시 편집 */}
+      <div onClick={() => { setEditingLogo(v => !v); setLogoVal(s.logo || ''); }} style={{ cursor: 'pointer', flexShrink: 0 }} title="클릭하여 로고 변경">
+        <ServiceLogo logo={s.logo} color={s.color} name={s.name} size={38} />
+      </div>
+
+      <div style={{ flex: 1, cursor: 'pointer' }} onClick={onEdit}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontWeight: 700, fontSize: 14 }}>{s.name}</span>
+          {editingLogo && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }} onClick={e => e.stopPropagation()}>
+              <input
+                autoFocus
+                value={logoVal}
+                onChange={e => setLogoVal(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') save(); if (e.key === 'Escape') setEditingLogo(false); }}
+                placeholder="로고 키 (예: netflix)"
+                style={{ fontSize: 12, border: '1.5px solid var(--primary)', borderRadius: 6, padding: '3px 8px', outline: 'none', width: 160 }}
+              />
+              <button onClick={save} style={{ fontSize: 11, fontWeight: 700, background: 'var(--primary)', color: '#fff', borderRadius: 6, padding: '3px 8px' }}>저장</button>
+              <button onClick={() => setEditingLogo(false)} style={{ fontSize: 11, fontWeight: 700, background: 'var(--bg)', color: 'var(--text-secondary)', borderRadius: 6, padding: '3px 8px', border: '1px solid var(--border)' }}>취소</button>
+            </div>
+          )}
+          {!editingLogo && <span style={{ fontSize: 11, color: 'var(--text-tertiary)' }}>{s.logo}</span>}
+        </div>
+      </div>
+
+      <span style={{ fontSize: 13, color: 'var(--primary)', fontWeight: 600, minWidth: 90 }}>{Number(s.monthly_price).toLocaleString()}원/월</span>
+      <div style={{ display: 'flex', gap: 8 }} onClick={e => e.stopPropagation()}>
+        <button onClick={onEdit} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 8, background: 'var(--primary-bg)', color: 'var(--primary)', fontSize: 13, fontWeight: 700, border: '1px solid var(--primary)', whiteSpace: 'nowrap' }}>
+          <Edit2 size={13} /> 수정
+        </button>
+        <button onClick={onDelete} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px', borderRadius: 8, background: '#FEE2E2', color: '#DC2626', fontSize: 13, fontWeight: 700, border: '1px solid #FCA5A5', whiteSpace: 'nowrap' }}>
+          <Trash2 size={13} /> 삭제
+        </button>
+      </div>
     </div>
   );
 }
