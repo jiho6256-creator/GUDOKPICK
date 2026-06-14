@@ -7,7 +7,7 @@ const api = axios.create({ baseURL: import.meta.env.VITE_API_URL || 'http://loca
 
 const CATEGORIES = [
   { key: 'all', label: '전체' },
-  { key: 'deal', label: '진행 중' },
+  { key: 'deal', label: '진행 중인 프로모션' },
   { key: 'general', label: '자유' },
 ];
 
