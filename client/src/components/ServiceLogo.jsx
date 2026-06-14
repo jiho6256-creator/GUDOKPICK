@@ -3,7 +3,7 @@ const gf = (domain) => `https://www.google.com/s2/favicons?domain=${domain}&sz=1
 const LOGO_IMAGES = {
   netflix:     'https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.png',
   tving:       gf('tving.com'),
-  wavve:       gf('wavve.com'),
+  wavve:       'https://play-lh.googleusercontent.com/jiuEpYJ4kVy3pRKxpq_1iE8XsN3gjYkmE4qtjAamnb3smpCob9ckw02S6FEtTEae6-2pMgVXu2cJ8QGM4_-x=w240-h480',
   coupangplay: gf('coupangplay.com'),
   watcha:      gf('watcha.com'),
   disneyplus:  'https://cnbl-cdn.bamgrid.com/assets/7ecc8bcb60ad77193058d63e321bd21cbac2fc67/original',
