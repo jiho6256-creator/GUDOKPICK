@@ -408,7 +408,7 @@ export default function Community() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
             <button type="button" onMouseDown={e => { e.preventDefault(); document.execCommand('bold'); }}
               style={{ fontSize: 13, fontWeight: 900, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}>B</button>
-            <button type="button" onMouseDown={e => { e.preventDefault(); const c = document.queryCommandValue('foreColor'); document.execCommand('foreColor', false, (c === 'rgb(239, 68, 68)' || c === '#ef4444') ? 'inherit' : '#EF4444'); }}
+            <button type="button" onMouseDown={e => { e.preventDefault(); const sel = window.getSelection(); const el = sel?.rangeCount ? sel.getRangeAt(0).startContainer : null; const node = el?.nodeType === 3 ? el.parentElement : el; const isRed = node && window.getComputedStyle(node).color === 'rgb(239, 68, 68)'; document.execCommand('foreColor', false, isRed ? '#1A1A2E' : '#EF4444'); }}
               style={{ fontSize: 13, fontWeight: 700, color: '#EF4444', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}>A</button>
             <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4, cursor: imgUploading ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', opacity: imgUploading ? 0.6 : 1 }}>
               🖼️ {imgUploading ? '업로드 중...' : '이미지 삽입'}
@@ -663,7 +663,7 @@ export function PostDetail() {
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
               <button type="button" onMouseDown={e => { e.preventDefault(); document.execCommand('bold'); }}
                 style={{ fontSize: 13, fontWeight: 900, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}>B</button>
-              <button type="button" onMouseDown={e => { e.preventDefault(); const c = document.queryCommandValue('foreColor'); document.execCommand('foreColor', false, (c === 'rgb(239, 68, 68)' || c === '#ef4444') ? 'inherit' : '#EF4444'); }}
+              <button type="button" onMouseDown={e => { e.preventDefault(); const sel = window.getSelection(); const el = sel?.rangeCount ? sel.getRangeAt(0).startContainer : null; const node = el?.nodeType === 3 ? el.parentElement : el; const isRed = node && window.getComputedStyle(node).color === 'rgb(239, 68, 68)'; document.execCommand('foreColor', false, isRed ? '#1A1A2E' : '#EF4444'); }}
                 style={{ fontSize: 13, fontWeight: 700, color: '#EF4444', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}>A</button>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4, cursor: editImgUploading ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', opacity: editImgUploading ? 0.6 : 1 }}>
                 🖼️ {editImgUploading ? '업로드 중...' : '이미지 삽입'}
