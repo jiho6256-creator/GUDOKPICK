@@ -90,5 +90,8 @@ input[type='number'].no-spinner::-webkit-inner-spin-button,
 input[type='number'].no-spinner::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
 .post-editor:empty:before { content: attr(data-placeholder); color: #aaa; pointer-events: none; }
-.post-editor img { max-width: 100%; height: auto; display: block; margin: 4px 0; resize: both; overflow: auto; cursor: nw-resize; }
-.post-editor img:hover { outline: 2px solid var(--primary); }
+.post-editor .img-wrap { display: inline-block; position: relative; max-width: 100%; line-height: 0; margin: 4px 0; }
+.post-editor .img-wrap img { display: block; max-width: 100%; height: auto; }
+.post-editor .img-wrap:hover { outline: 2px solid var(--primary); outline-offset: 1px; }
+.post-editor .resize-handle { position: absolute; bottom: 3px; right: 3px; width: 13px; height: 13px; background: var(--primary); border-radius: 2px; cursor: nw-resize; opacity: 0; transition: opacity 0.15s; }
+.post-editor .img-wrap:hover .resize-handle { opacity: 0.85; }

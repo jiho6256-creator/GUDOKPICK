@@ -133,6 +133,33 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
   );
 }
 
+function useEditorImageResize() {
+  useEffect(() => {
+    let startX, startW, targetImg;
+    const onDown = (e) => {
+      if (!e.target.classList.contains('resize-handle')) return;
+      e.preventDefault();
+      targetImg = e.target.closest('.img-wrap')?.querySelector('img');
+      if (!targetImg) return;
+      startX = e.clientX;
+      startW = targetImg.offsetWidth;
+      const onMove = (e) => {
+        const w = Math.max(40, startW + (e.clientX - startX));
+        targetImg.style.width = w + 'px';
+        targetImg.style.height = 'auto';
+      };
+      const onUp = () => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    };
+    document.addEventListener('mousedown', onDown);
+    return () => document.removeEventListener('mousedown', onDown);
+  }, []);
+}
+
 function sanitizeHtml(html) {
   if (!html) return '';
   const tmp = document.createElement('div');
@@ -182,6 +209,7 @@ function timeAgo(dateStr) {
 
 // 게시글 목록
 export default function Community() {
+  useEditorImageResize();
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [category, setCategory] = useState('deal');
@@ -208,7 +236,7 @@ export default function Community() {
     try {
       const url = await uploadToCloudinary(file);
       editorRef.current?.focus();
-      document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;height:auto;display:block;margin:4px 0;resize:both;overflow:auto;" />`);
+      document.execCommand('insertHTML', false, `<span class="img-wrap" contenteditable="false"><img src="${url}" style="width:320px;height:auto;" /><span class="resize-handle"></span></span>`);
     } finally {
       setImgUploading(false);
     }
@@ -408,6 +436,7 @@ export default function Community() {
 
 // 게시글 상세
 export function PostDetail() {
+  useEditorImageResize();
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
@@ -475,7 +504,7 @@ export function PostDetail() {
       const res = await fetch('https://api.cloudinary.com/v1_1/dazyzaeda/image/upload', { method: 'POST', body: data });
       const json = await res.json();
       editEditorRef.current?.focus();
-      document.execCommand('insertHTML', false, `<img src="${json.secure_url}" style="max-width:100%;height:auto;display:block;margin:4px 0;resize:both;overflow:auto;" />`);
+      document.execCommand('insertHTML', false, `<span class="img-wrap" contenteditable="false"><img src="${json.secure_url}" style="width:320px;height:auto;" /><span class="resize-handle"></span></span>`);
     } finally {
       setEditImgUploading(false);
     }
