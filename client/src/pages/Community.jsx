@@ -101,8 +101,8 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
         <input
           value={value ? value : query}
           onChange={e => { setQuery(e.target.value); onChange(''); setOpen(true); }}
-          onFocus={() => setOpen(true)}
-          onClick={() => { if (value) setOpen(v => !v); }}
+          onFocus={() => { if (!value) setOpen(true); }}
+          onClick={() => { if (value) setOpen(true); }}
           placeholder="서비스 검색 또는 선택"
           readOnly={!!value}
           style={{ ...inputStyle, flex: 1, border: 'none', outline: 'none', margin: 0, borderRadius: 0, background: 'transparent', cursor: 'pointer' }}
