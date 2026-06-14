@@ -12,7 +12,7 @@ const LOGO_IMAGES = {
   ssg:         gf('ssg.com'),
   kakao:       'https://t1.kakaocdn.net/kakaocorp/kakaocorp/admin/5f9c58e3017800001e000001',
   melon:       gf('melon.com'),
-  spotify:     'https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png',
+  spotify:     'https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg',
   youtubemusic: 'https://music.youtube.com/img/favicon_144.png',
   applemusic:  'https://www.apple.com/favicon.ico',
   bugs:        gf('bugs.co.kr'),
