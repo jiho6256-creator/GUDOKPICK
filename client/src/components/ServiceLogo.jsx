@@ -1,35 +1,34 @@
-const cl = (domain) => `https://logo.clearbit.com/${domain}`;
+const gf = (domain) => `https://www.google.com/s2/favicons?domain=${domain}&sz=128`;
 
 const LOGO_IMAGES = {
-  netflix:     cl('netflix.com'),
-  tving:       cl('tving.com'),
-  wavve:       cl('wavve.com'),
-  coupangplay: cl('coupangplay.com'),
-  watcha:      cl('watcha.com'),
-  disneyplus:  cl('disneyplus.com'),
-  coupang:     cl('coupang.com'),
-  naver:       cl('naver.com'),
-  ssg:         cl('ssg.com'),
-  kakao:       cl('kakao.com'),
-  melon:       cl('melon.com'),
-  spotify:     cl('spotify.com'),
-  applemusic:  cl('music.apple.com'),
-  bugs:        cl('bugs.co.kr'),
-  chatgpt:     cl('openai.com'),
-  claude:      cl('anthropic.com'),
-  gemini:      cl('google.com'),
-  copilot:     cl('microsoft.com'),
-  perplexity:  cl('perplexity.ai'),
-  kurly:       cl('kurly.com'),
-  baemin:      cl('baemin.com'),
-  yogiyo:      cl('yogiyo.co.kr'),
-  ddanggyeoyo: cl('ddanggyeoyo.com'),
-  elevenst:    cl('11st.co.kr'),
-  xbox:        cl('xbox.com'),
-  playstation: cl('playstation.com'),
-  nintendo:    cl('nintendo.com'),
-  nexon:       cl('nexon.com'),
-  youtube:     cl('youtube.com'),
+  netflix:     'https://assets.nflxext.com/ffe/siteui/common/icons/nficon2016.png',
+  tving:       gf('tving.com'),
+  wavve:       gf('wavve.com'),
+  coupangplay: gf('coupangplay.com'),
+  watcha:      gf('watcha.com'),
+  disneyplus:  'https://cnbl-cdn.bamgrid.com/assets/7ecc8bcb60ad77193058d63e321bd21cbac2fc67/original',
+  coupang:     gf('coupang.com'),
+  naver:       'https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png',
+  ssg:         gf('ssg.com'),
+  kakao:       'https://t1.kakaocdn.net/kakaocorp/kakaocorp/admin/5f9c58e3017800001e000001',
+  melon:       gf('melon.com'),
+  spotify:     'https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png',
+  youtubemusic: 'https://music.youtube.com/img/favicon_144.png',
+  applemusic:  'https://www.apple.com/favicon.ico',
+  bugs:        gf('bugs.co.kr'),
+  chatgpt:     'https://cdn.oaistatic.com/assets/favicon-o20kmmos.svg',
+  claude:      gf('claude.ai'),
+  gemini:      gf('gemini.google.com'),
+  copilot:     gf('copilot.microsoft.com'),
+  perplexity:  gf('perplexity.ai'),
+  baemin:      gf('baemin.com'),
+  yogiyo:      gf('yogiyo.co.kr'),
+  coupangeats: gf('eats.coupang.com'),
+  xbox:        'https://xbox.com/favicon.ico',
+  playstation: gf('playstation.com'),
+  nintendo:    gf('nintendo.com'),
+  nexon:       gf('nexon.com'),
+  youtube:     gf('youtube.com'),
 };
 
 const LOGOS_FALLBACK = {
@@ -37,7 +36,7 @@ const LOGOS_FALLBACK = {
   coupang: '🛒', naver: '🟢', ssg: '🏪', kakao: '💛',
   melon: '🍈', spotify: '🎵', youtubemusic: '▶️', applemusic: '🎶', bugs: '🎙️',
   chatgpt: '🤖', claude: '💜', gemini: '💎', copilot: '🔷', perplexity: '🔍',
-  kurly: '🥬', baemin: '🛵', yogiyo: '🍔', ddanggyeoyo: '🚀', elevenst: '🛍️',
+  baemin: '🛵', yogiyo: '🍔', coupangeats: '🚀',
   xbox: '🎮', playstation: '🕹️', nintendo: '🎯', nexon: '⚔️', youtube: '▶️',
 };
 
@@ -56,7 +55,7 @@ export default function ServiceLogo({ logo, color, name, size = 48 }) {
         <img
           src={imgUrl}
           alt={name}
-          style={{ width: size * 0.65, height: size * 0.65, objectFit: 'contain' }}
+          style={{ width: size * 0.7, height: size * 0.7, objectFit: 'contain' }}
           onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
         />
       ) : null}
