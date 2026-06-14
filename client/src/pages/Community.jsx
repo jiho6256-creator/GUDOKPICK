@@ -133,6 +133,63 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
   );
 }
 
+function useEditorImageDrag() {
+  useEffect(() => {
+    let dragEl = null;
+
+    const onDragStart = (e) => {
+      const wrap = e.target.closest('.img-wrap');
+      if (!wrap) return;
+      dragEl = wrap;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', '');
+      setTimeout(() => { if (dragEl) dragEl.style.opacity = '0.4'; }, 0);
+    };
+
+    const onDragEnd = () => {
+      if (dragEl) dragEl.style.opacity = '';
+      dragEl = null;
+    };
+
+    const onDragOver = (e) => {
+      if (!dragEl) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    };
+
+    const onDrop = (e) => {
+      if (!dragEl) return;
+      e.preventDefault();
+      let range;
+      if (document.caretRangeFromPoint) {
+        range = document.caretRangeFromPoint(e.clientX, e.clientY);
+      } else if (document.caretPositionFromPoint) {
+        const pos = document.caretPositionFromPoint(e.clientX, e.clientY);
+        if (pos) { range = document.createRange(); range.setStart(pos.offsetNode, pos.offset); }
+      }
+      if (range) {
+        dragEl.style.opacity = '';
+        range.insertNode(dragEl);
+        range.collapse(false);
+        const sel = window.getSelection();
+        sel?.removeAllRanges();
+        sel?.addRange(range);
+      }
+    };
+
+    document.addEventListener('dragstart', onDragStart);
+    document.addEventListener('dragend', onDragEnd);
+    document.addEventListener('dragover', onDragOver);
+    document.addEventListener('drop', onDrop);
+    return () => {
+      document.removeEventListener('dragstart', onDragStart);
+      document.removeEventListener('dragend', onDragEnd);
+      document.removeEventListener('dragover', onDragOver);
+      document.removeEventListener('drop', onDrop);
+    };
+  }, []);
+}
+
 function useEditorImageResize() {
   useEffect(() => {
     let startX, startW, targetImg;
@@ -210,6 +267,7 @@ function timeAgo(dateStr) {
 // 게시글 목록
 export default function Community() {
   useEditorImageResize();
+  useEditorImageDrag();
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [category, setCategory] = useState('deal');
@@ -236,7 +294,7 @@ export default function Community() {
     try {
       const url = await uploadToCloudinary(file);
       editorRef.current?.focus();
-      document.execCommand('insertHTML', false, `<span class="img-wrap" contenteditable="false"><img src="${url}" style="width:320px;height:auto;" /><span class="resize-handle"></span></span>`);
+      document.execCommand('insertHTML', false, `<span class="img-wrap" contenteditable="false" draggable="true"><img src="${url}" draggable="false" style="width:320px;height:auto;" /><span class="resize-handle" draggable="false"></span></span>`);
     } finally {
       setImgUploading(false);
     }
@@ -437,6 +495,7 @@ export default function Community() {
 // 게시글 상세
 export function PostDetail() {
   useEditorImageResize();
+  useEditorImageDrag();
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
