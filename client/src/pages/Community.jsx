@@ -406,6 +406,10 @@ export default function Community() {
             style={{ ...inputStyle, width: '100%', boxSizing: 'border-box', marginBottom: 10 }} />
           {/* 에디터 툴바 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+            <button type="button" onMouseDown={e => { e.preventDefault(); document.execCommand('bold'); }}
+              style={{ fontSize: 13, fontWeight: 900, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}>B</button>
+            <button type="button" onMouseDown={e => { e.preventDefault(); document.execCommand('foreColor', false, '#EF4444'); }}
+              style={{ fontSize: 13, fontWeight: 700, color: '#EF4444', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}>A</button>
             <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4, cursor: imgUploading ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', opacity: imgUploading ? 0.6 : 1 }}>
               🖼️ {imgUploading ? '업로드 중...' : '이미지 삽입'}
               <input type="file" accept="image/*" disabled={imgUploading} style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) insertImage(f); e.target.value = ''; }} />
@@ -657,6 +661,10 @@ export function PostDetail() {
               </>
             )}
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+              <button type="button" onMouseDown={e => { e.preventDefault(); document.execCommand('bold'); }}
+                style={{ fontSize: 13, fontWeight: 900, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}>B</button>
+              <button type="button" onMouseDown={e => { e.preventDefault(); document.execCommand('foreColor', false, '#EF4444'); }}
+                style={{ fontSize: 13, fontWeight: 700, color: '#EF4444', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', cursor: 'pointer' }}>A</button>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: 4, cursor: editImgUploading ? 'not-allowed' : 'pointer', fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', background: 'var(--bg)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', opacity: editImgUploading ? 0.6 : 1 }}>
                 🖼️ {editImgUploading ? '업로드 중...' : '이미지 삽입'}
                 <input type="file" accept="image/*" disabled={editImgUploading} style={{ display: 'none' }} onChange={e => { const f = e.target.files?.[0]; if (f) insertEditImage(f); e.target.value = ''; }} />
