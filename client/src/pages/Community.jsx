@@ -93,7 +93,7 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
   const filtered = sorted.filter(s => matchChosung(s.name, query));
 
   const select = (name) => { onChange(name); setQuery(''); setOpen(false); };
-  const clear = () => { onChange(''); setQuery(''); };
+  const clear = () => { onChange(''); setQuery(''); setOpen(true); };
 
   return (
     <div ref={ref} style={{ position: 'relative', marginBottom: 10 }}>
@@ -102,20 +102,21 @@ function ServiceSearchSelect({ services, value, onChange, inputStyle }) {
           value={value ? value : query}
           onChange={e => { setQuery(e.target.value); onChange(''); setOpen(true); }}
           onFocus={() => setOpen(true)}
+          onClick={() => { if (value) setOpen(v => !v); }}
           placeholder="서비스 검색 또는 선택"
           readOnly={!!value}
-          style={{ ...inputStyle, flex: 1, border: 'none', outline: 'none', margin: 0, borderRadius: 0, background: 'transparent', cursor: value ? 'default' : 'text' }}
+          style={{ ...inputStyle, flex: 1, border: 'none', outline: 'none', margin: 0, borderRadius: 0, background: 'transparent', cursor: 'pointer' }}
         />
         {value
           ? <button onClick={clear} style={{ padding: '0 12px', color: 'var(--text-secondary)', fontSize: 16, fontWeight: 700 }}>×</button>
           : <span onClick={() => setOpen(v => !v)} style={{ padding: '0 12px', color: 'var(--text-secondary)', fontSize: 12, cursor: 'pointer' }}>▼</span>
         }
       </div>
-      {open && !value && (
+      {open && (
         <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', border: '1px solid var(--border)', borderRadius: 10, boxShadow: '0 4px 16px rgba(0,0,0,0.1)', zIndex: 100, maxHeight: 200, overflowY: 'auto', marginTop: 4 }}>
-          {filtered.length === 0
+          {(value ? sorted : filtered).length === 0
             ? <div style={{ padding: '12px 16px', color: 'var(--text-secondary)', fontSize: 13 }}>검색 결과 없음</div>
-            : filtered.map(s => (
+            : (value ? sorted : filtered).map(s => (
               <div key={s.id} onMouseDown={() => select(s.name)}
                 style={{ padding: '10px 16px', fontSize: 14, cursor: 'pointer', borderBottom: '1px solid var(--border)' }}
                 onMouseEnter={e => e.currentTarget.style.background = 'var(--primary-bg)'}
